@@ -1,20 +1,20 @@
 local waterModelFile = "character/particles/fountain2/fountain2.x"
 local effectsModelFile = "character/CC/05effect/waterbubble.x"
 
-local msgGlobal = string
-local entityGlobal = object
+local waterheadName = "ghost_water_pipe"
+local entity = GameLogic.EntityManager.GetEntity(waterheadName)
 
--- 往浴缸注水事件
-local function waterInjection(msg, entity, type, scaling)
+-- 往浴缸注水
+local function waterInjection(entity, type, scaling)
     if (not scaling) then
         scaling = 1
     end
-    local subEntityWater = GameLogic.EntityManager.GetEntity(msg.name .. "_water")
-    local subEntityWaterBubble = GameLogic.EntityManager.GetEntity(msg.name .. "_bubble")
+    local subEntityWater = GameLogic.EntityManager.GetEntity(waterheadName .. "_water")
+    local subEntityWaterBubble = GameLogic.EntityManager.GetEntity(waterheadName .. "_bubble")
     if (type == "open") then
         if (not subEntityWater) then
             subEntityWater = entity:CloneMe()
-            subEntityWater:SetName(msg.name .. "_water")
+            subEntityWater:SetName(waterheadName .. "_water")
             subEntityWater:SetModelFile(waterModelFile)
             subEntityWater:SetOnClickEvent(nil)
             subEntityWater:SetCanDrag(false)
@@ -26,7 +26,7 @@ local function waterInjection(msg, entity, type, scaling)
         end
         if (not subEntityWaterBubble) then
             subEntityWaterBubble = entity:CloneMe()
-            subEntityWaterBubble:SetName(msg.name .. "_bubble")
+            subEntityWaterBubble:SetName(waterheadName .. "_bubble")
             subEntityWaterBubble:SetModelFile(effectsModelFile)
             subEntityWaterBubble:SetOnClickEvent(nil)
             subEntityWaterBubble:SetCanDrag(false)
@@ -49,39 +49,60 @@ end
 -- 水龙头点击事件
 registerBroadcastEvent("onclickWaterhead", function(msg)
     effectsModelFile = "character/CC/05effect/waterbubble.x"
-    msg = commonlib.LoadTableFromString(msg)
-    local entity = GameLogic.EntityManager.GetEntity(msg.name)
-    msgGlobal = msg
-    entityGlobal = entity
     if (entity) then
         if (entity.tag == "open") then
             entity.tag = "close"
         else
             entity.tag = "open"
         end
-        waterInjection(msg, entity, entity.tag)
+        waterInjection(entity, entity.tag)
     end
 end)
 
 -- 沐浴液1
 registerBroadcastEvent("onclickChangeModel1", function(msg)
     effectsModelFile = "character/CC/05effect/star.x"
-    waterInjection(msgGlobal, entityGlobal, "close")
-    waterInjection(msgGlobal, entityGlobal, "open")
+    waterInjection(entity, "close")
+    waterInjection(entity, "open")
 end)
 
 -- 沐浴液2
 registerBroadcastEvent("onclickChangeModel2", function(msg)
     effectsModelFile = "character/v5/09effect/firewater/firewater.x"
-    waterInjection(msgGlobal, entityGlobal, "close")
-    waterInjection(msgGlobal, entityGlobal, "open", 0.06)
+    waterInjection(entity, "close")
+    waterInjection(entity, "open", 0.06)
 end)
 
-registerBroadcastEvent("onclickEgg", function(msg)
-    itemA:CloseWindow()
-    itemA = window([[
-    <div style="width: 70px;height: 70px;background: url(images/1.png);"></div>
- ]], "_lt", 10, 10, 70, 70)
+-- 洗手池 普通水流
+registerBroadcastEvent("onclickCreateWater", function(msg)
+    msg = commonlib.LoadTableFromString(msg)
+    local entity = GameLogic.EntityManager.GetEntity(msg.name)
+    if (entity) then
+        if (entity.tag == "open") then
+            entity.tag = "close"
+        else
+            entity.tag = "open"
+        end
+        local subEntity = GameLogic.EntityManager.GetEntity(msg.name .. "_water")
+        if (entity.tag == "open") then
+            if (not subEntity) then
+                subEntity = entity:CloneMe()
+                subEntity:SetName(msg.name .. "_water")
+                subEntity:SetModelFile(waterModelFile)
+                subEntity:SetOnClickEvent(nil)
+                subEntity:SetCanDrag(false)
+                subEntity:EnablePhysics(false)
+                subEntity:SetScaling(1)
+                subEntity:SetFacing(subEntity:GetFacing() + math.pi)
+                local x, y, z = subEntity:GetPosition()
+                subEntity:SetPosition(x, y - 2.5, z + 0.2)
+            end
+        else
+            if (subEntity) then
+                subEntity:Destroy()
+            end
+        end
+    end
 end)
 
 -- 衣篓小幽灵，不通用！
