@@ -113,24 +113,35 @@ registerBroadcastEvent("onclickFireplace", function(msg)
     end
 end)
 
--- 闪烁的氛围灯
+-- 闪烁的氛围灯 故障的灯\
 local flag = true
-registerBroadcastEvent("clickStopFlicker", function(msg)
-    flag = false
-    setBlock(19573, 7, 19373, 270)
-end)
-
-while (flag) do
-    setBlock(19573, 7, 19373, 270)
-    wait(0.1)
-    setBlock(19573, 7, 19373, 0)
-    wait(0.1)
-    setBlock(19573, 7, 19373, 270)
-    wait(0.1)
-    setBlock(19573, 7, 19373, 0)
-    wait(0.1)
-    setBlock(19573, 7, 19373, 270)
-    wait(0.5)
-    setBlock(19573, 7, 19373, 0)
-    wait(0.5)
+local function flicker()
+    while (flag) do
+        setBlock(19573, 7, 19373, 270)
+        wait(0.1)
+        setBlock(19573, 7, 19373, 0)
+        wait(0.1)
+        setBlock(19573, 7, 19373, 270)
+        wait(0.1)
+        setBlock(19573, 7, 19373, 0)
+        wait(0.1)
+        setBlock(19573, 7, 19373, 270)
+        wait(0.5)
+        setBlock(19573, 7, 19373, 0)
+        wait(0.5)
+    end
 end
+-- flicker(flag)
+registerBroadcastEvent("clickStopFlicker", function(msg)
+    local flag = true
+    if (flag) then
+        flag = false
+        flicker()
+        -- wait(0.5)
+        -- setBlock(19573, 7, 19373, 0)
+        -- setBlock(19573, 7, 19373, 270)
+    else
+        flag = true
+        flicker()
+    end
+end)
