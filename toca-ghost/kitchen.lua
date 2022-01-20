@@ -1,3 +1,15 @@
+-- split
+function split(str, sep)
+    local res = {}
+    if sep == nil then
+        sep = "%s"
+    end
+    for s in string.gmatch(str, "([^" .. sep .. "]+)") do
+        table.insert(res, s)
+    end
+    return res
+end
+
 -- 点击事件for Can 鱼罐头变为鱼，不可复用
 registerBroadcastEvent("onClickReplace4Can", function(msg)
     msg = commonlib.LoadTableFromString(msg)
@@ -8,22 +20,27 @@ registerBroadcastEvent("onClickReplace4Can", function(msg)
     end
 end)
 
--- 锅里的物体
+-- 锅里的物体名字
 local foodEntityName = ''
--- 插件点事件-> 烤鱼、放食物 
+-- 第二个静态属性（表示食物的类别）,会存到烤熟的物体中
+local foodCategory = ''
+
+-- 烤鱼
 registerBroadcastEvent("onMountCooking", function(msg)
     msg = commonlib.LoadTableFromString(msg)
     local entity = GameLogic.EntityManager.GetEntity(msg.name)
     if entity then
         -- local mountedEntity = GameLogic.EntityManager.GetEntity(msg.mountedEntityName)
         local mountedEntityTag = GameLogic.EntityManager.GetEntity(msg.mountedEntityName):GetStaticTag()
-        if (mountedEntityTag == 'food') then
+        local tagTable = split(mountedEntityTag, ",")
+        if (tagTable[1] == 'food') then
             foodEntityName = msg.mountedEntityName
+            foodCategory = tagTable[2]
         end
     end
 end)
 
--- 点击事件-> 点火+烤鱼 
+-- 点击-> 点火+烤鱼 
 local fireModelFile = "character/CC/05effect/fire.x"
 registerBroadcastEvent("onclickFireOnStove", function(msg)
     msg = commonlib.LoadTableFromString(msg)
@@ -59,7 +76,12 @@ registerBroadcastEvent("onclickFireOnStove", function(msg)
                     local cookedFileName = foodFilename:gsub("(%.%w+)$", "_cooked%1")
                     wait(0.5)
                     foodEntity:SetModelFile(cookedFileName)
-                    foodEntity:SetStaticTag('food_cooked')
+                    foodEntity:SetOnEndDragEvent('onFoodDragEnd')
+                    if foodCategory then
+                        foodEntity:SetStaticTag('food_cooked,' .. foodCategory)
+                    else
+                        foodEntity:SetStaticTag('food_cooked')
+                    end
                     foodEntityName = ''
                 end
             end

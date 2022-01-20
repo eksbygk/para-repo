@@ -75,7 +75,9 @@ function OnClickBegin()
     randerCollectWindows()
     wait(0.2)
     stopMovie()
+    beginImg:CloseWindow()
     beginBtn:CloseWindow()
+    helpBtn:CloseWindow()
 end
 beginImg = window([[
 <div> 
@@ -85,12 +87,12 @@ beginImg = window([[
 
 beginBtn = window([[
 <div> 
-    <div style="width: 100px;height: 100px;background: url(images/start.png);" onclick="OnClickBegin"></div>
+    <div style="width: 97px;height: 56px;background: url(images/start.png);" onclick="OnClickBegin"></div>
 </div> 
 ]], "_ct", 10, 10, 97, 56)
 
 helpBtn = window([[
 <div> 
-    <div style="width: 100px;height: 100px;background: url(images/help.png);></div>
+    <div style="width: 97px;height: 56px;background: url(images/help.png);></div>
 </div> 
-]], "_ct", 10, 10, 97, 56)
+]], "_ct", 80, 30, 97, 56)

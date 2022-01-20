@@ -33,49 +33,39 @@ registerBroadcastEvent("onclickCreateFlicker", function(msg)
     end
 end)
 
--- 灯！
-registerBroadcastEvent("click_light", function(msg)
-    msg = commonlib.LoadTableFromString(msg)
-    local entity = GameLogic.EntityManager.GetEntity(msg.name)
-    if (entity) then
-        local bx, by, bz = entity:GetBlockPos()
-        local id = getBlock(bx, by, bz)
-        local lightblockId = 270 -- invisible light block 
-        if (entity.tag == "on") then
-            entity.tag = nil
-            if (id == lightblockId) then
-                setBlock(bx, by, bz, 0)
-            end
-        else
-            if (not id or id == 0 or id == lightblockId) then
-                entity.tag = "on"
-                setBlock(bx, by, bz, lightblockId)
-            end
-        end
+-- 闪烁的氛围灯 故障的灯
+local flag = true
+local function flicker()
+    while (flag) do
+        setBlock(19573, 7, 19373, 270)
+        wait(0.1)
+        setBlock(19573, 7, 19373, 0)
+        wait(0.1)
+        setBlock(19573, 7, 19373, 270)
+        wait(0.1)
+        setBlock(19573, 7, 19373, 0)
+        wait(0.1)
+        setBlock(19573, 7, 19373, 270)
+        wait(0.5)
+        setBlock(19573, 7, 19373, 0)
+        wait(0.5)
     end
-end)
+end
 
--- 灯 2.0
-registerBroadcastEvent("click_light2", function(msg)
-    msg = commonlib.LoadTableFromString(msg)
-    local entity = GameLogic.EntityManager.GetEntity(msg.name)
-    if (entity) then
-        local bx, by, bz = entity:GetBlockPos()
-        local id = getBlock(bx, by, bz)
-        local lightblockId = 270 -- invisible light block 
-        if (entity.tag == "on") then
-            entity.tag = nil
-            if (id == lightblockId) then
-                setBlock(bx, by + 1, bz, 0)
-            end
-        else
-            if (not id or id == 0 or id == lightblockId) then
-                entity.tag = "on"
-                setBlock(bx, by + 1, bz, lightblockId)
-            end
-        end
+registerBroadcastEvent("clickStopFlicker", function(msg)
+    if (flag) then
+        flag = false
+        flicker()
+        wait(0.5)
+        setBlock(19573, 7, 19373, 0)
+        setBlock(19573, 7, 19373, 270)
+    else
+        flag = true
+        flicker()
     end
 end)
+flicker(flag)
+
 
 -- 火焰
 -- local fireModelFile = "character/CC/05effect/fire.x"
@@ -110,38 +100,5 @@ registerBroadcastEvent("onclickFireplace", function(msg)
                 subEntity:Destroy()
             end
         end
-    end
-end)
-
--- 闪烁的氛围灯 故障的灯\
-local flag = true
-local function flicker()
-    while (flag) do
-        setBlock(19573, 7, 19373, 270)
-        wait(0.1)
-        setBlock(19573, 7, 19373, 0)
-        wait(0.1)
-        setBlock(19573, 7, 19373, 270)
-        wait(0.1)
-        setBlock(19573, 7, 19373, 0)
-        wait(0.1)
-        setBlock(19573, 7, 19373, 270)
-        wait(0.5)
-        setBlock(19573, 7, 19373, 0)
-        wait(0.5)
-    end
-end
--- flicker(flag)
-registerBroadcastEvent("clickStopFlicker", function(msg)
-    local flag = true
-    if (flag) then
-        flag = false
-        flicker()
-        -- wait(0.5)
-        -- setBlock(19573, 7, 19373, 0)
-        -- setBlock(19573, 7, 19373, 270)
-    else
-        flag = true
-        flicker()
     end
 end)
