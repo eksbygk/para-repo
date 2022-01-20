@@ -16,11 +16,13 @@ end
 -- split
 function split(str, sep)
     local res = {}
-    if sep == nil then
-        sep = "%s"
-    end
-    for s in string.gmatch(str, "([^" .. sep .. "]+)") do
-        table.insert(res, s)
+    if str ~= nil then
+        if sep == nil then
+            sep = "%s"
+        end
+        for s in string.gmatch(str, "([^" .. sep .. "]+)") do
+            table.insert(res, s)
+        end
     end
     return res
 end

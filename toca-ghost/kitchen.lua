@@ -1,11 +1,13 @@
 -- split
 function split(str, sep)
     local res = {}
-    if sep == nil then
-        sep = "%s"
-    end
-    for s in string.gmatch(str, "([^" .. sep .. "]+)") do
-        table.insert(res, s)
+    if str ~= nil then
+        if sep == nil then
+            sep = "%s"
+        end
+        for s in string.gmatch(str, "([^" .. sep .. "]+)") do
+            table.insert(res, s)
+        end
     end
     return res
 end
@@ -22,8 +24,10 @@ end)
 
 -- 锅里的物体名字
 local foodEntityName = ''
--- 第二个静态属性（表示食物的类别）,会存到烤熟的物体中
+-- 第2个静态属性（表示食物的类别）,会存到烤熟的物体中
 local foodCategory = ''
+-- 第3个静态属性（表示收集品的索引）,会存到烤熟的物体中
+local collectIndex = ''
 
 -- 烤鱼
 registerBroadcastEvent("onMountCooking", function(msg)
@@ -36,6 +40,7 @@ registerBroadcastEvent("onMountCooking", function(msg)
         if (tagTable[1] == 'food') then
             foodEntityName = msg.mountedEntityName
             foodCategory = tagTable[2]
+            collectIndex = tagTable[3]
         end
     end
 end)
@@ -77,8 +82,8 @@ registerBroadcastEvent("onclickFireOnStove", function(msg)
                     wait(0.5)
                     foodEntity:SetModelFile(cookedFileName)
                     foodEntity:SetOnEndDragEvent('onFoodDragEnd')
-                    if foodCategory then
-                        foodEntity:SetStaticTag('food_cooked,' .. foodCategory)
+                    if (foodCategory and collectIndex) then
+                        foodEntity:SetStaticTag('food_cooked,' .. foodCategory .. ',' .. collectIndex)
                     else
                         foodEntity:SetStaticTag('food_cooked')
                     end

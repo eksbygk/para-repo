@@ -1,15 +1,20 @@
 -- split
 function split(str, sep)
     local res = {}
-    if sep == nil then
-        sep = "%s"
-    end
-    for s in string.gmatch(str, "([^" .. sep .. "]+)") do
-        table.insert(res, s)
+    if str ~= nil then
+        if sep == nil then
+            sep = "%s"
+        end
+        for s in string.gmatch(str, "([^" .. sep .. "]+)") do
+            table.insert(res, s)
+        end
     end
     return res
 end
 
+-- 兑换收集品
+-- NPC 静态属性{新Entity文件名,动画名称}
+-- 食物的静态属性{food_cooked,新Entity文件名,收集品序号}
 function changeTargetFood(entity, mountedEntity)
     local entityTag = entity:GetStaticTag()
     local mountedTag = mountedEntity:GetStaticTag()
@@ -24,7 +29,8 @@ function changeTargetFood(entity, mountedEntity)
             local newFileName = 'blocktemplates/' .. entityTagTable[1] .. '.bmax'
             entity:SetStaticTag('changed')
             mountedEntity:SetModelFile(newFileName)
-            mountedEntity:SetStaticTag('changed')
+            mountedEntity:SetStaticTag('collect,' .. mountedTagTable[3])
+            mountedEntity:SetOnClickEvent("onclickCollectItem")
             local x, y, z = mountedEntity:GetPosition()
             mountedEntity:SetPosition(x, y + 2, z)
             stopMovie(entityTagTable[2])
