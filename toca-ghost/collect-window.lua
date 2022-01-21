@@ -55,27 +55,35 @@ function randerCollectWindows()
                             [[<div style="width: 50px;height: 50px;background: url(images/19.png);"></div>]],
                             [[<div style="width: 50px;height: 50px;background: url(images/20.png);"></div>]]}
 
-    local PositionsA = {10, 65, 120, 175, 230, 285, 340, 395, 450, 505, 560, 615, 670, 725, 780, 835, 890, 945,
-                        1000.1055}
+    -- local PositionsA = {10, 65, 120, 175, 230, 285, 340, 395, 450, 505, 560, 615, 670, 725, 780, 835, 890, 945, 1000,
+    --                     1055}
+    local PositionsA = {110, 165, 220, 275, 330, 385, 440, 495, 550, 605, 660, 715, 770, 825, 880, 935, 990, 1045, 1100,
+                        1155}
 
-    local itemWindows = {window(itemsHtml[1], "_lt", PositionsA[1], 10, 70, 70),
-                         window(itemsHtml[2], "_lt", PositionsA[2], 10, 70, 70),
-                         window(itemsHtml[3], "_lt", PositionsA[3], 10, 70, 70),
-                         window(itemsHtml[4], "_lt", PositionsA[4], 10, 70, 70),
-                         window(itemsHtml[5], "_lt", PositionsA[5], 10, 70, 70),
-                         window(itemsHtml[6], "_lt", PositionsA[6], 10, 70, 70),
-                         window(itemsHtml[7], "_lt", PositionsA[7], 10, 70, 70),
-                         window(itemsHtml[8], "_lt", PositionsA[8], 10, 70, 70),
-                         window(itemsHtml[9], "_lt", PositionsA[9], 10, 70, 70),
-                         window(itemsHtml[10], "_lt", PositionsA[10], 10, 70, 70),
-                         window(itemsHtml[11], "_lt", PositionsA[11], 10, 70, 70),
-                         window(itemsHtml[12], "_lt", PositionsA[12], 10, 70, 70),
-                         window(itemsHtml[13], "_lt", PositionsA[13], 10, 70, 70),
-                         window(itemsHtml[14], "_lt", PositionsA[14], 10, 70, 70),
-                         window(itemsHtml[15], "_lt", PositionsA[15], 10, 70, 70),
-                         window(itemsHtml[16], "_lt", PositionsA[16], 10, 70, 70),
-                         window(itemsHtml[17], "_lt", PositionsA[17], 10, 70, 70),
-                         window(itemsHtml[18], "_lt", PositionsA[18], 10, 70, 70)}
+    local itemWindows = {window(itemsHtml[1], "_lt", PositionsA[1], 15, 70, 70),
+                         window(itemsHtml[2], "_lt", PositionsA[2], 15, 70, 70),
+                         window(itemsHtml[3], "_lt", PositionsA[3], 15, 70, 70),
+                         window(itemsHtml[4], "_lt", PositionsA[4], 15, 70, 70),
+                         window(itemsHtml[5], "_lt", PositionsA[5], 15, 70, 70),
+                         window(itemsHtml[6], "_lt", PositionsA[6], 15, 70, 70),
+                         window(itemsHtml[7], "_lt", PositionsA[7], 15, 70, 70),
+                         window(itemsHtml[8], "_lt", PositionsA[8], 15, 70, 70),
+                         window(itemsHtml[9], "_lt", PositionsA[9], 15, 70, 70),
+                         window(itemsHtml[10], "_lt", PositionsA[10], 15, 70, 70),
+                         window(itemsHtml[11], "_lt", PositionsA[11], 15, 70, 70),
+                         window(itemsHtml[12], "_lt", PositionsA[12], 15, 70, 70),
+                         window(itemsHtml[13], "_lt", PositionsA[13], 15, 70, 70),
+                         window(itemsHtml[14], "_lt", PositionsA[14], 15, 70, 70),
+                         window(itemsHtml[15], "_lt", PositionsA[15], 15, 70, 70),
+                         window(itemsHtml[16], "_lt", PositionsA[16], 15, 70, 70),
+                         window(itemsHtml[17], "_lt", PositionsA[17], 15, 70, 70),
+                         window(itemsHtml[18], "_lt", PositionsA[18], 15, 70, 70),
+                         window(itemsHtml[19], "_lt", PositionsA[19], 15, 70, 70),
+                         window(itemsHtml[20], "_lt", PositionsA[20], 15, 70, 70)}
+
+    local collectItemsName = {"杯子", "糖果", "便便", "蝙蝠", "药丸", "硬糖", "挂画", "零食", "花",
+                              "苹果", "鸡蛋", "吃剩的苹果", "黑猫玩具", "电池", "鱼骨头", "音符",
+                              "金币", "一支笔", "叶子", "害羞的南瓜"}
 
     registerBroadcastEvent("onclickCollectItem", function(msg)
         msg = commonlib.LoadTableFromString(msg)
@@ -84,8 +92,11 @@ function randerCollectWindows()
         if (staticTagTable and staticTagTable[1] == "collect") then
             local index = tonumber(staticTagTable[2])
             itemWindows[index]:CloseWindow()
-            itemWindows[index] = window(itemsCollected[index], "_lt", PositionsA[index], 10, 70, 70)
+            itemWindows[index] = window(itemsCollected[index], "_lt", PositionsA[index], 15, 70, 70)
+            say("获得：" .. collectItemsName[index])
         end
+        wait(1)
+        entity:Destroy()
     end)
 end
 
@@ -93,16 +104,28 @@ function OnClickBegin()
     -- wait(0.5)
     randerCollectWindows()
     wait(0.2)
-    stopMovie()
+    -- stopMovie()
     beginImg:CloseWindow()
     beginBtn:CloseWindow()
     helpBtn:CloseWindow()
 end
+
+function OnClickShowHelp()
+    helpImg = window([[
+    <div style="width: 700px;height: 700px;background: url(images/help-desc.png);"></div>
+    ]], "_ct", -350, -350, 700, 700)
+    helpImg:registerEvent("onmouseup", function(event)
+        if (event:button() == "left") then
+            helpImg:CloseWindow()
+        end
+    end)
+end
+
 beginImg = window([[
 <div> 
-    <div style="width: 600px;height: 600px;background: url(images/begin.png);"></div>
+    <div style="width: 800px;height: 759px;background: url(images/begin.png);"></div>
 </div> 
-]], "_ct", -300, -300, 600, 600)
+]], "_ct", -400, -380, 800, 759)
 
 beginBtn = window([[
 <div> 
@@ -112,7 +135,7 @@ beginBtn = window([[
 
 helpBtn = window([[
 <div> 
-    <div style="width: 155px;height: 90px;background: url(images/help.png);"></div>
+    <div style="width: 155px;height: 90px;background: url(images/help.png);" onclick="OnClickShowHelp"></div>
 </div> 
 ]], "_ct", 180, -190, 155, 90)
 

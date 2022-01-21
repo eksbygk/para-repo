@@ -1,7 +1,5 @@
 -- 南瓜头闪烁特效 flicker
--- local flickerModelFile = "character/CC/05effect/glow.x"
--- local flickerModelFile = "character/CC/05effect/ghost.x"
-local flickerModelFile = "character/CC/05effect/ray.x"
+local flickerModelFile = "character/CC/05effect/star.x"
 registerBroadcastEvent("onclickCreateFlicker", function(msg)
     msg = commonlib.LoadTableFromString(msg)
     local entity = GameLogic.EntityManager.GetEntity(msg.name)
@@ -11,11 +9,11 @@ registerBroadcastEvent("onclickCreateFlicker", function(msg)
         else
             entity.tag = "open"
         end
-        local subEntity = GameLogic.EntityManager.GetEntity(msg.name .. "_water")
+        local subEntity = GameLogic.EntityManager.GetEntity(msg.name .. "_flicker")
         if (entity.tag == "open") then
             if (not subEntity) then
                 subEntity = entity:CloneMe()
-                subEntity:SetName(msg.name .. "_water")
+                subEntity:SetName(msg.name .. "_flicker")
                 subEntity:SetModelFile(flickerModelFile)
                 subEntity:SetOnClickEvent(nil)
                 subEntity:SetCanDrag(false)
@@ -24,10 +22,12 @@ registerBroadcastEvent("onclickCreateFlicker", function(msg)
                 subEntity:SetFacing(subEntity:GetFacing() + math.pi)
                 local x, y, z = subEntity:GetPosition()
                 subEntity:SetPosition(x, y + 0.5, z)
+                setBlock(subEntity.bx, subEntity.by, subEntity.bz, 270)
             end
         else
             if (subEntity) then
                 subEntity:Destroy()
+                setBlock(subEntity.bx, subEntity.by, subEntity.bz, 0)
             end
         end
     end
@@ -65,7 +65,6 @@ registerBroadcastEvent("clickStopFlicker", function(msg)
     end
 end)
 flicker(flag)
-
 
 -- 火焰
 -- local fireModelFile = "character/CC/05effect/fire.x"

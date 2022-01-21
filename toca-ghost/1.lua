@@ -1,21 +1,30 @@
 -- 特殊物体变换
--- 留声机
-registerBroadcastEvent("onMountChange4Phonograph", function(msg)
+-- 收音机换bgm
+registerBroadcastEvent("onMountRepalceBgm", function(msg)
     msg = commonlib.LoadTableFromString(msg)
     local entity = GameLogic.EntityManager.GetEntity(msg.name)
-    local entityTag = entity:GetStaticTag()
     if (entity) then
-        local mountedEntity = GameLogic.EntityManager.GetEntity(
-                                  msg.mountedEntityName)
-        local mountedTag = mountedEntity:GetStaticTag()
-        if (mountedEntity and mountedTag == "a9") then
-            local CFileName = 'blocktemplates/a9.bmax'
-            entity:SetStaticTag('changed')
-            mountedEntity:SetModelFile(CFileName)
-            mountedEntity:SetOnClickEvent("onclickCollectItem")
-            mountedEntity:SetStaticTag('{"collect", 16}')
-            local x, y, z = mountedEntity:GetPosition()
-            mountedEntity:SetPosition(x, y + 5, z)
+        local mountedEntity = GameLogic.EntityManager.GetEntity(msg.mountedEntityName)
+        if (mountedEntity and mountedEntity:GetStaticTag() == "bgm") then
+            playMusic()
+            playMusic("bgm2.mp3")
+        end
+    end
+end)
+
+-- 切菜 菜刀拖拽结束事件
+registerBroadcastEvent("onEndDragKnife", function(msg)
+    msg = commonlib.totable(msg)
+    if (msg.targetName) then
+        local targetEntity = GameLogic.EntityManager.GetEntity(msg.targetName)
+        local vegetableName = targetEntity:GetModelFile()
+        if (targetEntity) then
+            local targetTag = targetEntity:GetStaticTag()
+            if (targetTag == 'vegetable') then
+                local cutFileName = vegetableName:gsub("(%.%w+)$", "_cut%1")
+                targetEntity:SetModelFile(cutFileName)
+                targetEntity:SetStaticTag('cut')
+            end
         end
     end
 end)
