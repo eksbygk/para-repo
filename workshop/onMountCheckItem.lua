@@ -4,24 +4,36 @@ local itemCollectedTable = {
     ["blocktemplates/k18.bmax"] = "待收集", -- 木板
     ["blocktemplates/g28.bmax"] = "待收集" -- 尺子
 }
+local itemNameTable = {"特质胶水", "木工锯", "普通木板", "尺子"}
+local positionY = {40, 65, 90, 115}
 
 local function rendersTasks()
-    return "特制胶水： " .. itemCollectedTable["blocktemplates/k23.bmax"] .. "\n木工锯   ： " ..
-               itemCollectedTable["blocktemplates/k22.bmax"] .. "\n木板       ： " ..
-               itemCollectedTable["blocktemplates/k18.bmax"] .. "\n尺子       ： " ..
-               itemCollectedTable["blocktemplates/g28.bmax"]
+    -- return itemCollectedTable["blocktemplates/k23.bmax"] .. "\n" .. itemCollectedTable["blocktemplates/k22.bmax"] ..
+    --            "\n" .. itemCollectedTable["blocktemplates/k18.bmax"] .. "\n" ..
+    --            itemCollectedTable["blocktemplates/g28.bmax"]
+    
 end
 
-registerBroadcastEvent("showTasks", function(fromName)
-    local wnd = window([[<div style="font-weight:bold;background-color:#ffffff;padding:5px;width:170%;">Tasks</div>]],
-        "_lt", 20, 20, 160, 120)
-    local ctx = wnd:getContext()
-    ctx.fillStyle = "#00000090"
-    ctx:fillRect(0, 0, ctx:getWidth(), ctx:getHeight())
+-- registerBroadcastEvent("showTasks", function(fromName)
+local wnd = window(
+    [[<div style="font-weight:bold;background-color:#00000090;color:#fff;padding:5px;width:170%;font-size:18px;">
+    当前任务</div>]], "_lt", 50, 110, 160, 150)
+local ctx = wnd:getContext()
+ctx.fillStyle = "#00000080"
+ctx:fillRect(0, 0, ctx:getWidth(), ctx:getHeight())
+ctx.font = "Microsoft YaHei;16;"
+ctx.fillStyle = "#ffffff"
+ctx:fillText("特制胶水", 10, positionY[1])
+ctx:fillText("木工锯", 10, positionY[2])
+ctx:fillText("普通木板*3", 10, positionY[3])
+ctx:fillText("尺子", 10, positionY[4])
+ctx:fillText(itemCollectedTable["blocktemplates/k23.bmax"], 100, positionY[1])
+ctx:fillText(itemCollectedTable["blocktemplates/k22.bmax"], 100, positionY[2])
+ctx:fillText(itemCollectedTable["blocktemplates/k18.bmax"], 100, positionY[3])
+ctx:fillText(itemCollectedTable["blocktemplates/g28.bmax"], 100, positionY[4])
 
-    ctx.fillStyle = "#ffffff"
-    ctx:fillText(rendersTasks(), 10, 30)
-end)
+-- ctx:fillText(rendersTasks(), 100, 40)
+-- end)
 
 local dialogHtml = [[<div style="width: 1834px;height: 337px;background: url(images/dialog2.png);">
 <div style="margin-top: 200px;margin-left: 500px;width:1134px;height:28px;background: url(images/dialog4-1.png);"></div>
