@@ -10,7 +10,7 @@ registerBroadcastEvent("onClickCreateWindow", function(msg)
     msg = commonlib.LoadTableFromString(msg)
     local entity = GameLogic.EntityManager.GetEntity(msg.name)
     local bookIndex = tonumber(entity:GetStaticTag())
-    wnd = window(booksHtml[bookIndex], "_ct", -375, -250, 750, 500)
+    local wnd = window(booksHtml[bookIndex], "_ct", -375, -250, 750, 500)
     wnd:registerEvent("onmouseup", function(event)
         if (event:button() == "left") then
             wnd:CloseWindow()

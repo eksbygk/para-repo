@@ -12,7 +12,32 @@ function split(str, sep)
     return res
 end
 
+function OnClickShowHelp()
+    local helpImg = window([[
+    <div style="width: 700px;height: 700px;background: url(images/help-desc.png);"></div>
+    ]], "_ct", -350, -350, 700, 700)
+    helpImg:registerEvent("onmouseup", function(event)
+        if (event:button() == "left") then
+            helpImg:CloseWindow()
+        end
+    end)
+end
+
+function OnClickBegin()
+    -- wait(0.5)
+    randerCollectWindows()
+    wait(0.2)
+    -- stopMovie()
+    beginImg:CloseWindow()
+    beginBtn:CloseWindow()
+    helpBtn:CloseWindow()
+end
+
 function randerCollectWindows()
+    local helpBtn = window(
+        [[<div><div style="width: 85px;height: 45px;background: url(images/help.png);" onclick="OnClickShowHelp"></div></div>]],
+        "_lt", 110, 75, 85, 45)
+
     local itemsHtml = {[[<div style="width: 50px;height: 50px;background: url(images/001.png);"></div>]],
                        [[<div style="width: 50px;height: 50px;background: url(images/002.png);"></div>]],
                        [[<div style="width: 50px;height: 50px;background: url(images/003.png);"></div>]],
@@ -85,6 +110,30 @@ function randerCollectWindows()
                               "苹果", "鸡蛋", "吃剩的苹果", "黑猫玩具", "电池", "鱼骨头", "音符",
                               "金币", "一支笔", "叶子", "害羞的南瓜"}
 
+    local itemNum = 0
+    local function isPass()
+        if (itemNum == 12) then
+            broadcast("itemNum", itemNum)
+            cmd("/setblock 19577 6 19379 (2 3 0) 0")
+            say('Good！ 恭喜你集齐了12件物品，门已打开！ 可以继续收集剩余物品，会有惊喜')
+            playMovie("star1", 0, -1)
+            return
+        end
+        if (itemNum == 16) then
+            broadcast("itemNum", itemNum)
+            say('Nice！ 恭喜你集齐了16件物品，加油')
+            stopMovie("star1")
+            playMovie("star2", 0, -1)
+            return
+        end
+        if (itemNum == 20) then
+            broadcast("itemNum", itemNum)
+            say('Perfect！ 恭喜你收集所有物品')
+            stopMovie("star2")
+            playMovie("star3", 0, -1)
+        end
+    end
+
     registerBroadcastEvent("onclickCollectItem", function(msg)
         msg = commonlib.LoadTableFromString(msg)
         local entity = GameLogic.EntityManager.GetEntity(msg.name)
@@ -94,30 +143,11 @@ function randerCollectWindows()
             itemWindows[index]:CloseWindow()
             itemWindows[index] = window(itemsCollected[index], "_lt", PositionsA[index], 15, 70, 70)
             say("获得：" .. collectItemsName[index])
+            wait(1)
+            entity:Destroy()
+            itemNum = itemNum + 1
         end
-        wait(1)
-        entity:Destroy()
-    end)
-end
-
-function OnClickBegin()
-    -- wait(0.5)
-    randerCollectWindows()
-    wait(0.2)
-    -- stopMovie()
-    beginImg:CloseWindow()
-    beginBtn:CloseWindow()
-    helpBtn:CloseWindow()
-end
-
-function OnClickShowHelp()
-    helpImg = window([[
-    <div style="width: 700px;height: 700px;background: url(images/help-desc.png);"></div>
-    ]], "_ct", -350, -350, 700, 700)
-    helpImg:registerEvent("onmouseup", function(event)
-        if (event:button() == "left") then
-            helpImg:CloseWindow()
-        end
+        isPass()
     end)
 end
 

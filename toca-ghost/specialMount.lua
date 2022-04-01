@@ -1,4 +1,22 @@
 -- 特殊物体变换
+-- 独角兽
+registerBroadcastEvent("onMountMerge4Unicorn", function(msg)
+    msg = commonlib.LoadTableFromString(msg)
+    local entity = GameLogic.EntityManager.GetEntity(msg.name)
+    local Atag = entity:GetStaticTag()
+    if (entity and Atag ~= 'merged') then
+        local mountedEntity = GameLogic.EntityManager.GetEntity(msg.mountedEntityName)
+        local Btag = mountedEntity:GetStaticTag()
+        if (mountedEntity and Btag and Btag ~= 'merged') then
+            local CFileName = 'blocktemplates/' .. Btag .. '.bmax'
+            entity:SetModelFile(CFileName)
+            mountedEntity:Destroy()
+            mountedEntity:SetStaticTag('merged')
+            mountedEntity:FallDown()
+        end
+    end
+end)
+
 -- 时钟 点击创建物体
 registerBroadcastEvent("onClickChange4Clock", function(msg)
     msg = commonlib.LoadTableFromString(msg)
