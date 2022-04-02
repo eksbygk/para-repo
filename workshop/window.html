@@ -8,23 +8,47 @@
     <title>Document</title>
     <style>
         .box {
-            background-color: transparent;
-            border: none;
-            width: 100%;
-            
-        }
-
-        .red {
-            font-weight: bold;
+            text-align: right;
+            margin-right: 0;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 
 <body>
-    <div style="width: 1834px;height: 337px;background: url(images/dialog2.png);">
-        <div style="margin-top: 50px;margin-left: 300px;font-size:20px;font-weight: bold;" onclick="OnClickTest2">长尺在哪里？</div>
-        <div style="width: 270px;height:35px;background: url(images/dialog2.png);"></div>
+    <div style="width: 200px;height: 200px;background-color: #00000090;color:#fff;font-size:18px;font-weight: bold;">
+        <div
+            style="width: 200%; height: 50px;background-color: #000;font-size:24px;text-align: center;line-height: 50px;">
+            任务列表</div>
+        <div style="padding:10px;">
+            <div style="display: flex;justify-content: space-between;">
+                <span>
+                    <%=itemTable.gule.title%>
+                </span>
+                <pe:label value='<%=itemTable.gule.type%>' getter="value" />
+            </div>
+            <div>
+                <span>
+                    <%=itemTable.saw.title%>
+                </span>
+                <pe:label value='<%=itemTable.saw.type%>' getter="value" />
+            </div>
+            <div>
+                <span>
+                    <%=itemTable.wood.title%>
+                </span>
+                <pe:label value='<%=itemTable.wood.type%>' getter="value" />
+            </div>
+            <div>
+                <span>
+                    <%=itemTable.ruler.title%>
+                </span>
+                <pe:label value='<%=itemTable.ruler.type%>' getter="value" />
+            </div>
+        </div>
     </div>
+
+
 </body>
 
 </html>

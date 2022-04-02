@@ -1,66 +1,112 @@
-local itemCollectedTable = {
-    ["blocktemplates/k23.bmax"] = "待收集", -- 特制胶水
-    ["blocktemplates/k22.bmax"] = "待收集", -- 木工锯
-    ["blocktemplates/k18.bmax"] = "待收集", -- 木板
-    ["blocktemplates/g28.bmax"] = "待收集" -- 尺子
+itemFile = {
+    gule = "blocktemplates/k23.bmax",
+    saw = "blocktemplates/k22.bmax",
+    wood = "blocktemplates/k18.bmax",
+    ruler = "blocktemplates/g28.bmax"
 }
-local itemNameTable = {"特质胶水", "木工锯", "普通木板", "尺子"}
-local positionY = {40, 65, 90, 115}
 
-local function rendersTasks()
-    -- return itemCollectedTable["blocktemplates/k23.bmax"] .. "\n" .. itemCollectedTable["blocktemplates/k22.bmax"] ..
-    --            "\n" .. itemCollectedTable["blocktemplates/k18.bmax"] .. "\n" ..
-    --            itemCollectedTable["blocktemplates/g28.bmax"]
-    
-end
+itemTable = {
+    [itemFile.gule] = {
+        index = 1,
+        num = 1,
+        title = "特制胶水",
+        type = "待收集",
+        color = "#ffffff",
+        filename = "blocktemplates/k23.bmax"
+    },
+    [itemFile.saw] = {
+        index = 2,
+        num = 1,
+        title = "木工锯",
+        type = "待收集",
+        color = "#ffffff",
+        filename = "blocktemplates/k22.bmax"
+    },
+    [itemFile.wood] = {
+        index = 3,
+        num = 5,
+        title = "普通木板",
+        type = "待收集",
+        color = "#ffffff",
+        filename = "blocktemplates/k18.bmax"
+    },
+    [itemFile.ruler] = {
+        index = 4,
+        title = "尺子",
+        type = "待收集",
+        num = 1,
+        color = "#ffffff",
+        filename = "blocktemplates/g28.bmax"
+    }
+}
 
--- registerBroadcastEvent("showTasks", function(fromName)
-local wnd = window(
-    [[<div style="font-weight:bold;background-color:#00000090;color:#fff;padding:5px;width:170%;font-size:18px;">
-    当前任务</div>]], "_lt", 50, 110, 160, 150)
-local ctx = wnd:getContext()
-ctx.fillStyle = "#00000080"
-ctx:fillRect(0, 0, ctx:getWidth(), ctx:getHeight())
-ctx.font = "Microsoft YaHei;16;"
-ctx.fillStyle = "#ffffff"
-ctx:fillText("特制胶水", 10, positionY[1])
-ctx:fillText("木工锯", 10, positionY[2])
-ctx:fillText("普通木板*3", 10, positionY[3])
-ctx:fillText("尺子", 10, positionY[4])
-ctx:fillText(itemCollectedTable["blocktemplates/k23.bmax"], 100, positionY[1])
-ctx:fillText(itemCollectedTable["blocktemplates/k22.bmax"], 100, positionY[2])
-ctx:fillText(itemCollectedTable["blocktemplates/k18.bmax"], 100, positionY[3])
-ctx:fillText(itemCollectedTable["blocktemplates/g28.bmax"], 100, positionY[4])
+registerBroadcastEvent("showTasks", function(fromName)
+    local taskWnd = window([[ 
+        <div style="width: 200px;height: 200px;background-color: #00000090;color:#fff;font-size:18px;font-weight: bold;">
+            <div
+                style="width: 200%; height: 50px;background-color: #000;font-size:24px;text-align: center;line-height: 50px;">
+                任务列表</div>
+            <div style="padding:10px;">
+                <div>
+                    <span style="width: 120px;margin-bottom: 8px;">
+                        <%=itemTable[itemFile.gule].title%>
+                    </span>
+                    <pe:label value='<%=itemTable[itemFile.gule].type%>' getter="value" />
+                </div>
+                <div>
+                    <span style="width: 120px;margin-bottom: 8px;">
+                        <%=itemTable[itemFile.saw].title%>
+                    </span>
+                    <pe:label value='<%=itemTable[itemFile.saw].type%>' getter="value" />
+                </div>
+                <div>
+                    <span style="width: 120px;margin-bottom: 8px;">
+                        <%=itemTable[itemFile.wood].title%>
+                        <pe:label value='<%=tostring(itemTable[itemFile.wood].num)%>' getter="value" />
+                    </span>
+                    <pe:label value='<%=itemTable[itemFile.wood].type%>' getter="value" />
+                </div>
+                <div>
+                    <span style="width: 120px;">
+                        <%=itemTable[itemFile.ruler].title%>
+                    </span>
+                    <pe:label value='<%=itemTable[itemFile.ruler].type%>' getter="value;style" style="color:'<%=itemTable[itemFile.ruler].color%>'"/>
+                </div>
+            </div>
+        </div>
+        ]], "_lt", 50, 110, 200, 200)
+end)
 
--- ctx:fillText(rendersTasks(), 100, 40)
--- end)
-
+-- dialog
 local dialogHtml = [[<div style="width: 1834px;height: 337px;background: url(images/dialog2.png);">
 <div style="margin-top: 200px;margin-left: 500px;width:1134px;height:28px;background: url(images/dialog4-1.png);"></div>
 </div>]]
-
+local flag = true
 local function renderDialog()
-    local dialog = window(dialogHtml, "_ctb", 0, 0, 1834, 337)
-    dialog:SetDesignResolution(1834, 337)
-    dialog:registerEvent("onmouseup", function(event)
-        if (event:button() == "left") then
-            dialog:CloseWindow()
-        end
-    end)
+    if (flag) then
+        flag = false
+        local dialog = window(dialogHtml, "_ctb", 0, 0, 1834, 337)
+        dialog:SetDesignResolution(1834, 337)
+        dialog:registerEvent("onmouseup", function(event)
+            if (event:button() == "left") then
+                dialog:CloseWindow()
+                flag = true
+            end
+        end)
+    end
 end
-
 registerBroadcastEvent("onMountCheckItem", function(msg)
     msg = commonlib.LoadTableFromString(msg)
     local entity = GameLogic.EntityManager.GetEntity(msg.name)
     local mountedEntity = GameLogic.EntityManager.GetEntity(msg.mountedEntityName)
     local mountedFileName = mountedEntity:GetModelFile()
-    if (itemCollectedTable[mountedFileName] == "待收集") then
-        renderDialog()
-        itemCollectedTable[mountedFileName] = "完成"
-        ctx:clearRect()
-        ctx.fillStyle = "#00000090"
-        ctx:fillRect(0, 0, ctx:getWidth(), ctx:getHeight())
-        ctx.fillStyle = "#ffffff"
-        ctx:fillText(rendersTasks(), 10, 30)
+    if (mountedEntity and itemTable[mountedFileName].type == "待收集") then
+        mountedEntity:Destroy()
+        itemTable[mountedFileName].num = itemTable[mountedFileName].num - 1
+        if (itemTable[mountedFileName].num == 0) then
+            itemTable[mountedFileName].num = ""
+            renderDialog()
+            itemTable[mountedFileName].type = "已完成"
+        end
     end
 end)
