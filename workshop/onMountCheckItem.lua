@@ -1,3 +1,5 @@
+_G.section = 1
+
 itemFile = {
     gule = "blocktemplates/k23.bmax",
     saw = "blocktemplates/k22.bmax",
@@ -25,6 +27,7 @@ itemTable = {
     [itemFile.wood] = {
         index = 3,
         num = 5,
+        join = " * ",
         title = "普通木板",
         type = "待收集",
         color = "#ffffff",
@@ -41,7 +44,7 @@ itemTable = {
 }
 
 registerBroadcastEvent("showTasks", function(fromName)
-    local taskWnd = window([[ 
+    taskWnd = window([[ 
         <div style="width: 200px;height: 200px;background-color: #00000090;color:#fff;font-size:18px;font-weight: bold;">
             <div
                 style="width: 200%; height: 50px;background-color: #000;font-size:24px;text-align: center;line-height: 50px;">
@@ -62,6 +65,7 @@ registerBroadcastEvent("showTasks", function(fromName)
                 <div>
                     <span style="width: 120px;margin-bottom: 8px;">
                         <%=itemTable[itemFile.wood].title%>
+                        <pe:label value='<%=tostring(itemTable[itemFile.wood].join)%>' getter="value" />
                         <pe:label value='<%=tostring(itemTable[itemFile.wood].num)%>' getter="value" />
                     </span>
                     <pe:label value='<%=itemTable[itemFile.wood].type%>' getter="value" />
@@ -77,6 +81,9 @@ registerBroadcastEvent("showTasks", function(fromName)
         ]], "_lt", 50, 110, 200, 200)
 end)
 
+-- 物品总数
+itemNum = 0
+
 -- dialog
 local dialogHtml = [[<div style="width: 1834px;height: 337px;background: url(images/dialog2.png);">
 <div style="margin-top: 200px;margin-left: 500px;width:1134px;height:28px;background: url(images/dialog4-1.png);"></div>
@@ -91,22 +98,43 @@ local function renderDialog()
             if (event:button() == "left") then
                 dialog:CloseWindow()
                 flag = true
+                if (itemNum == 4) then
+                    _G.section = 2
+                    taskWnd:CloseWindow()
+                    local dialogFinal = window([[
+                        <div style="width: 1834px;height: 337px;background: url(images/dialog2.png);">
+                            <div style="margin-top: 200px;margin-left: 500px;width:1134px;height:28px;background: url(images/dialog4.png);"></div>
+                        </div>
+                    ]], "_ctb", 0, 0, 1834, 337)
+                    dialogFinal:SetDesignResolution(1834, 337)
+                    dialogFinal:registerEvent("onmouseup", function(event)
+                        if (event:button() == "left") then
+                            dialogFinal:CloseWindow()
+                        end
+                    end)
+                end
             end
         end)
     end
 end
+
 registerBroadcastEvent("onMountCheckItem", function(msg)
     msg = commonlib.LoadTableFromString(msg)
     local entity = GameLogic.EntityManager.GetEntity(msg.name)
     local mountedEntity = GameLogic.EntityManager.GetEntity(msg.mountedEntityName)
     local mountedFileName = mountedEntity:GetModelFile()
-    if (mountedEntity and itemTable[mountedFileName].type == "待收集") then
+    if (itemTable[mountedFileName] and itemTable[mountedFileName].type == "待收集") then
         mountedEntity:Destroy()
         itemTable[mountedFileName].num = itemTable[mountedFileName].num - 1
         if (itemTable[mountedFileName].num == 0) then
+            if (itemTable[mountedFileName].join) then
+                itemTable[mountedFileName].join = ""
+            end
             itemTable[mountedFileName].num = ""
             renderDialog()
             itemTable[mountedFileName].type = "已完成"
+            itemNum = itemNum + 1
+
         end
     end
 end)
