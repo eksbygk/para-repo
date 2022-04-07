@@ -1,348 +1,258 @@
--- hide()
--- cmd("/show boundingbox")
--- cmd("/mode game")
-cmd("/replacetexture 255 texture/arrow.png")
--- cmd("/registeritem 2001 texture/start_button.png")
-setActorValue("physicsRadius", 0.49)
-setActorValue("physicsHeight", 1)
-scale(-40)
-
-_G.protagonistDegree = 0
--- _G.curMission = 9
-
-registerBroadcastEvent('init_level', function(msg)
-    local level_num = msg.level_num or 1
-    _G.curMission = level_num
-    SelectMission(_G.curMission)
-end)
-
-local missions = {{
-    x = 19340,
-    y = 5,
-    z = 19562
-}, -- 1
-{
-    x = 19188.5,
-    y = 4.9,
-    z = 19192.5
-}, -- 2
-{
-    x = 19188.5,
-    y = 4.9,
-    z = 19174.5
-}, -- 3
-{
-    x = 19188.5,
-    y = 4.9,
-    z = 19166.5
-}, -- 4
-{
-    x = 19188.5,
-    y = 4.9,
-    z = 19147.5
-}, -- 5
-{
-    x = 19188.5,
-    y = 4.9,
-    z = 19135.5
-}, -- 6
-{
-    x = 19189.5,
-    y = 4.9,
-    z = 19123.5
-}, -- 7
-{
-    x = 19194.5,
-    y = 4.9,
-    z = 19110.5
-}, -- 8
-{
-    x = 19188.5,
-    y = 4.9,
-    z = 19096.5
-}, -- 9
-{
-    x = 19189.5,
-    y = 4.9,
-    z = 19075.5
-}, -- 10
-{
-    x = 19179.5,
-    y = 4.9,
-    z = 19197.5
-}, -- 11
-{
-    x = 19175.5,
-    y = 4.9,
-    z = 19188.5
-}, -- 12
-{
-    x = 19172.5,
-    y = 4.9,
-    z = 19172.5
-}, -- 13
-{
-    x = 19176.5,
-    y = 4.9,
-    z = 19158.5
-}, -- 14
-{
-    x = 19174.5,
-    y = 4.9,
-    z = 19143.5
-}, -- 15
-{
-    x = 19171.5,
-    y = 4.9,
-    z = 19131.5
-}, -- 16
-{
-    x = 19174.5,
-    y = 4.9,
-    z = 19118.5
-}, -- 17
-{
-    x = 19174.5,
-    y = 4.9,
-    z = 19105.5
-}, -- 18
-{
-    x = 19178.5,
-    y = 4.9,
-    z = 19092.5
-}, -- 19
-{
-    x = 19178.5,
-    y = 4.9,
-    z = 19076.5
-} -- 20
-}
-
-local isTouchBox = false
--- local isRestart = false
--- local isKeyPress = false
-
-registerCollisionEvent("", function(actor)
-    local name = actor:GetActorValue("name")
-    if (name:match("box")) then
-        isTouchBox = true
-    end
-end)
-
-function SelectMission(index)
-    if not missions[index] then
-        tip("游戏结束,回到关卡界面!")
-        broadcast('focus_menu')
-        broadcast("reset")
-    end
-
-    _G.curMission = index
-    show()
-
-    broadcast("SetMissionsTimes")
-    broadcast("SetMultipleButton")
-    broadcast("SetBoxPosition")
-    broadcast("SetOneTimeButton")
-    broadcast("SetArrowPosition")
-
-    tip(format("---第%d关---", index))
-
-    broadcast("SetCameras", index)
-    setPos(missions[index].x, missions[index].y, missions[index].z)
-end
-
-function Pass()
-    if (_G.passMissionTimes > 0) then
-        return false
-    end
-
-    for i = 1, 9 do
-        moveForward(0.1)
-    end
-
-    if (isTouching(131)) then
-        say("win!")
-        -- local msg = { level_num = _G.curMission + 1 }
-        -- broadcast('init_level', msg)
-        -- return true
-    end
-end
-
-function Trap()
-    tip("踩到陷阱，稍等重新开始此关")
-    broadcast("reset")
-    wait(2)
-    local msg = {
-        level_num = _G.curMission
+table = {
+    yawOffset = 0,
+    isDisplayModel = true,
+    bx = 19168,
+    attrObject = {},
+    by = 6,
+    scaling = 3.54725,
+    skins_ = {},
+    bz = 19564,
+    hasCustomGeosets = false,
+    signal_connections = {
+        axon_connections = {}
+    },
+    item_id = 10074,
+    lastClickTime = 705162515,
+    dataFieldSkin = 4,
+    rulebag = {
+        isClient = true,
+        slots = {},
+        slotCount = 16
+    },
+    block_container = {
+        y = 6,
+        x = 19168,
+        z = 19564,
+        entities = {}
+    },
+    ticks = {
+        FrameMove = 0.055
+    },
+    filename = "blocktemplates/w23.bmax",
+    x = 19967.69398,
+    pitch = 0,
+    editmodel = {
+        signal_connections = {
+            axon_connections = {}
+        }
+    },
+    y = -127.08333,
+    mountpoints = {
+        points = {},
+        localTransform = {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1},
+        isTransformDirty = true,
+        worldSpaceAABBs = {}
+    },
+    dataFieldAsset = 1,
+    dataFieldScale = 3,
+    senders = {},
+    isLastSkipPicking = false,
+    roll = 0,
+    bIsCaptureMouse = false,
+    useRealPhysics = true,
+    obj = "",
+    z = 20380.02363,
+    isCustomModel = false,
+    aabb = {
+        mExtents = {0.25, 0.5, 0.25},
+        mCenter = {19967.69398, -126.58333, 20380.02363}
+    },
+    last_frametime = 705747.546,
+    anim = "0",
+    childLinks = {},
+    rulebagView = {
+        slots_ds = {{
+            slotNumber = 1
+        }, {
+            slotNumber = 2
+        }, {
+            slotNumber = 3
+        }, {
+            slotNumber = 4
+        }, {
+            slotNumber = 5
+        }, {
+            slotNumber = 6
+        }, {
+            slotNumber = 7
+        }, {
+            slotNumber = 8
+        }, {
+            slotNumber = 9
+        }, {
+            slotNumber = 10
+        }, {
+            slotNumber = 11
+        }, {
+            slotNumber = 12
+        }, {
+            slotNumber = 13
+        }, {
+            slotNumber = 14
+        }, {
+            slotNumber = 15
+        }, {
+            slotNumber = 16
+        }},
+        slots = {{
+            slotNumber = 1,
+            slotIndex = 1,
+            inventory = {
+                isClient = true,
+                slots = {},
+                slotCount = 16
+            }
+        }, {
+            slotNumber = 2,
+            slotIndex = 2,
+            inventory = {
+                isClient = true,
+                slots = {},
+                slotCount = 16
+            }
+        }, {
+            slotNumber = 3,
+            slotIndex = 3,
+            inventory = {
+                isClient = true,
+                slots = {},
+                slotCount = 16
+            }
+        }, {
+            slotNumber = 4,
+            slotIndex = 4,
+            inventory = {
+                isClient = true,
+                slots = {},
+                slotCount = 16
+            }
+        }, {
+            slotNumber = 5,
+            slotIndex = 5,
+            inventory = {
+                isClient = true,
+                slots = {},
+                slotCount = 16
+            }
+        }, {
+            slotNumber = 6,
+            slotIndex = 6,
+            inventory = {
+                isClient = true,
+                slots = {},
+                slotCount = 16
+            }
+        }, {
+            slotNumber = 7,
+            slotIndex = 7,
+            inventory = {
+                isClient = true,
+                slots = {},
+                slotCount = 16
+            }
+        }, {
+            slotNumber = 8,
+            slotIndex = 8,
+            inventory = {
+                isClient = true,
+                slots = {},
+                slotCount = 16
+            }
+        }, {
+            slotNumber = 9,
+            slotIndex = 9,
+            inventory = {
+                isClient = true,
+                slots = {},
+                slotCount = 16
+            }
+        }, {
+            slotNumber = 10,
+            slotIndex = 10,
+            inventory = {
+                isClient = true,
+                slots = {},
+                slotCount = 16
+            }
+        }, {
+            slotNumber = 11,
+            slotIndex = 11,
+            inventory = {
+                isClient = true,
+                slots = {},
+                slotCount = 16
+            }
+        }, {
+            slotNumber = 12,
+            slotIndex = 12,
+            inventory = {
+                isClient = true,
+                slots = {},
+                slotCount = 16
+            }
+        }, {
+            slotNumber = 13,
+            slotIndex = 13,
+            inventory = {
+                isClient = true,
+                slots = {},
+                slotCount = 16
+            }
+        }, {
+            slotNumber = 14,
+            slotIndex = 14,
+            inventory = {
+                isClient = true,
+                slots = {},
+                slotCount = 16
+            }
+        }, {
+            slotNumber = 15,
+            slotIndex = 15,
+            inventory = {
+                isClient = true,
+                slots = {},
+                slotCount = 16
+            }
+        }, {
+            slotNumber = 16,
+            slotIndex = 16,
+            inventory = {
+                isClient = true,
+                slots = {},
+                slotCount = 16
+            }
+        }},
+        observer_entities = {}
+    },
+    entityId = 3935,
+    enableDropFall = true,
+    obj_id = 3413,
+    onhoverEvent = "onHoverField",
+    dataFieldAnim = 2,
+    mainAssetPath = "D:/Paracraft������/worlds/DesignHouse/_shared/ryan/���ֿ��˸���/blocktemplates/w23.bmax",
+    dataWatcher = {
+        nextId = 5,
+        watchedObjects = {{
+            dataValueId = 1,
+            watched = true
+        }, {
+            dataValueId = 2,
+            watched = true
+        }, {
+            dataValueId = 3,
+            watched = true
+        }, {
+            dataValueId = 4,
+            watched = true
+        }}
+    },
+    facing = 1.57,
+    stackHeight = 0.2,
+    name = "20220316T103800.793907-117",
+    inventory = {
+        isClient = true,
+        slots = {},
+        slotCount = 27
     }
-    broadcast('init_level', msg)
-    return true
-end
-
-function Brake()
-    local x, y, z = getPos()
-
-    if isTouching("box") then
-        moveForward(-0.1)
-        wait(0.2)
-        return true
-    end
-
-    if isTouching(5) and string.match(x, "%d+%.5") and string.match(z, "%d+%.5") then
-        wait(0.2)
-        -- isKeyPress = false 
-        return true
-    end
-end
-
-function OneTimeButton()
-    local x, y, z = getPos()
-    local id, other = getBlock(x, 5, z)
-
-    if id == 201 and string.match(x, "%d+%.5") and string.match(z, "%d+%.5") then
-        local sx = string.match(x, "(%d+)%.5") or x
-        local sy = 5
-        local sz = string.match(z, "(%d+)%.5") or z
-
-        setBlock(sx, sy, sz, 237)
-
-        if (_G.passMissionTimes > 0) then
-            local times = _G.passMissionTimes - 1
-            broadcast('SetMissionsTimes', times)
-        end
-    end
-end
-
-function MultipleButton()
-    local x, y, z = getPos()
-    local id, other = getBlock(x, 5, z)
-
-    if id == 200 and string.match(x, "%d+%.5") and string.match(z, "%d+%.5") then
-        local sx = string.match(x, "(%d+)%.5") or x
-        local sy = 5
-        local sz = string.match(z, "(%d+)%.5") or z
-
-        if _G.multipleButtonMode == 'subtraction' and _G.passMissionTimes > 0 then
-            local times = _G.passMissionTimes - 1
-            broadcast('SetMissionsTimes', times)
-        end
-
-        if _G.multipleButtonMode == 'direction' then
-            broadcast('ChangeArrowDirection', {
-                x = x,
-                y = y,
-                z = z
-            })
-        end
-    end
-end
-
--- 2 is up
--- 14 is down
--- 8 is right
--- 20 is left
-function Arrow(callback)
-    local x, y, z = getPos()
-    local id, directId = getBlock(x, 5, z)
-
-    if string.match(x, "%d+%.5") and string.match(z, "%d+%.5") and type(callback) == 'function' then
-        callback(function()
-            -- isKeyPress = false
-
-            if directId == 2 then
-                ActorMove(0)
-            elseif directId == 14 then
-                ActorMove(180)
-            elseif directId == 8 then
-                ActorMove(90)
-            elseif directId == 20 then
-                ActorMove(270)
-            end
-        end)
-
-        if directId ~= 0 then
-            return true
-        end
-    end
-end
-
-function HandleFunctionBlock(callback)
-    if isTouching(58) then
-        moveForward(-0.1)
-        wait(0.2)
-        -- isKeyPress = false
-        return true
-    end
-
-    if isTouching(131) then
-        -- return Pass()
-        say("win!")
-    end
-
-    if isTouching(16) then
-        return Trap()
-    end
-
-    if isTouching(255) then
-        return Arrow(callback)
-    end
-
-    if isTouching(200) then
-        MultipleButton()
-    end
-
-    if isTouching(201) then
-        OneTimeButton()
-    end
-
-    if isTouching(5) then
-        return Brake()
-    end
-
-    if isTouching("box") then
-        moveForward(-0.1)
-        wait(0.2)
-        -- isKeyPress = false 
-        return true
-    end
-end
-
-function ActorMove(degree)
-    -- if isKeyPress then
-    -- return
-    -- end
-
-    -- isKeyPress = true
-    _G.protagonistDegree = degree
-    turnTo(degree or 0)
-
-    while (true) do
-        moveForward(0.1)
-        broadcastCollision()
-
-        -- if isRestart then
-        -- isRestart = false
-        -- break
-        -- end
-
-        if HandleFunctionBlock(function(callback)
-            if type(callback) == 'function' then
-                callback()
-            end
-        end) then
-            break
-        end
-    end
-end
-
-while (true) do
-    if isKeyPressed("w") or isKeyPressed("up") then
-        ActorMove(0)
-    elseif isKeyPressed("s") or isKeyPressed("down") then
-        ActorMove(180)
-    elseif isKeyPressed("a") or isKeyPressed("left") then
-        ActorMove(270)
-    elseif isKeyPressed("d") or isKeyPressed("right") then
-        ActorMove(90)
-    end
-end
+}
