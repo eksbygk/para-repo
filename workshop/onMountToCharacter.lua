@@ -14,13 +14,13 @@ local dialogTable = {
 function renderDialog(type)
     local dialog = window(dialogTable[type], "_ctb", 0, 0, 1834, 337)
     dialog:SetDesignResolution(1834, 337)
-    wait(4)
-    dialog:CloseWindow()
     dialog:registerEvent("onmouseup", function(event)
         if (event:button() == "left") then
             dialog:CloseWindow()
         end
     end)
+    wait(3)
+    dialog:CloseWindow()
 end
 
 local colaColdTable = {"blocktemplates/cupredcola_cold.bmax", "blocktemplates/cola_cold.bmax"}
@@ -32,8 +32,8 @@ function checkFood(entity, mountedEntity)
         local fogname = mountedEntity.name .. "_fogModel"
         local fogEntity = GameLogic.EntityManager.GetEntity(fogname)
         renderDialog("right")
-        fogEntity:destroy()
-        mountedEntity:destroy()
+        fogEntity:Destroy()
+        mountedEntity:Destroy()
     elseif (filename == colaTable[1] or filename == colaTable[2]) then
         renderDialog("notCold")
     else
