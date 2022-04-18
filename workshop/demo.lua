@@ -83,5 +83,7 @@ registerBroadcastEvent("onMountEvent", function(msg)
         local x, y, z = mountedEntity:GetPosition()
         mountedEntity:SetPosition(x, y - 2.6, z - 0.2)
         mountedEntity:FallDown()
+
+        mountedEntity:Destroy()
     end
 end)
