@@ -10,6 +10,7 @@ dialog:registerEvent("onmouseup", function(event)
     end
 end)
 
+-- Mount
 registerBroadcastEvent("onMountEvent", function(msg)
     msg = commonlib.LoadTableFromString(msg)
     local entity = GameLogic.EntityManager.GetEntity(msg.name)
@@ -19,6 +20,7 @@ registerBroadcastEvent("onMountEvent", function(msg)
     end
 end)
 
+-- Hover
 registerBroadcastEvent("onHoverEvent", function(msg)
     msg = commonlib.LoadTableFromString(msg)
     local entity = GameLogic.EntityManager.GetEntity(msg.name)
@@ -28,8 +30,39 @@ registerBroadcastEvent("onHoverEvent", function(msg)
     end
 end)
 
--- API
+-- Create
+registerBroadcastEvent("onclickCreate", function(msg)
+    msg = commonlib.LoadTableFromString(msg)
+    local entity = GameLogic.EntityManager.GetEntity(msg.name)
+    if (entity) then
+        if (entity.tag == "open") then
+            entity.tag = "close"
+        else
+            entity.tag = "open"
+        end
+        local subEntity = GameLogic.EntityManager.GetEntity(msg.name .. "_water")
+        if (entity.tag == "open") then
+            if (not subEntity) then
+                subEntity = entity:CloneMe()
+                subEntity:SetName(msg.name .. "_water")
+                subEntity:SetModelFile(waterModelFile)
+                subEntity:SetOnClickEvent(nil)
+                subEntity:SetCanDrag(false)
+                subEntity:EnablePhysics(false)
+                subEntity:SetScaling(1)
+                subEntity:SetFacing(subEntity:GetFacing() + math.pi)
+                local x, y, z = subEntity:GetPosition()
+                subEntity:SetPosition(x, y - 2.5, z + 0.2)
+            end
+        else
+            if (subEntity) then
+                subEntity:Destroy()
+            end
+        end
+    end
+end)
 
+-- API
 registerBroadcastEvent("onMountEvent", function(msg)
     msg = commonlib.LoadTableFromString(msg)
     local entity = GameLogic.EntityManager.GetEntity(msg.name)
@@ -40,6 +73,7 @@ registerBroadcastEvent("onMountEvent", function(msg)
         mountedEntity:SetModelFile()
         mountedEntity:SetOnClickEvent(nil)
         mountedEntity:SetOnMountEvent(nil)
+        mountedEntity:SetOnHoverEvent(nil)
         mountedEntity:SetCanDrag(false)
         mountedEntity:EnablePhysics(false)
         mountedEntity:SetScaling(1)
