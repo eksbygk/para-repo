@@ -1,6 +1,6 @@
-html = [[<div style="width: 1834px;height: 337px;background: url(images/soldier/dialog10.png);">
-        <div style="margin-top: 200px;margin-left: 500px;width:1134px;height:57px;background: url(images/soldier/dialog10-1.png);"></div>
-    </div>]]
+html = [[<div style="width: 1834px;height: 337px;background: url(images/elder/dialog_bg.png);">
+<div style="margin-top: 135px;margin-left: 470px;width:1134px;height:57px;background: url(images/custodian/dialog3-3.png);"></div>
+</div>]]
 
 local dialog = window(html, "_ctb", 0, 0, 1834, 337)
 dialog:SetDesignResolution(1834, 337)
@@ -9,6 +9,12 @@ dialog:registerEvent("onmouseup", function(event)
         dialog:CloseWindow()
     end
 end)
+
+-- html function 中的参数
+function showTip(i, mcmlNode)
+    local string = mcmlNode:GetAttribute("param")
+    local number = tonumber(mcmlNode:GetAttribute("param"))
+end
 
 -- Mount
 registerBroadcastEvent("onMountEvent", function(msg)
@@ -29,6 +35,22 @@ registerBroadcastEvent("onHoverEvent", function(msg)
         -- do something
     end
 end)
+
+-- Create simple
+local subEntity = GameLogic.EntityManager.GetEntity(msg.name .. "_key")
+if (not subEntity) then
+    subEntity = entity:CloneMe()
+    subEntity:SetName(msg.name .. "_key")
+    subEntity:SetModelFile(key.filename)
+    subEntity.tag = key.spec
+    subEntity:SetOnClickEvent("showTag")
+    subEntity:SetCanDrag(true)
+    subEntity:EnablePhysics(true)
+    subEntity:SetAutoTurningDuringDragging(true)
+    subEntity:SetScaling(1)
+    subEntity:SetPosition(19156, 8, 19565)
+    subEntity:FallDown()
+end
 
 -- Create
 registerBroadcastEvent("onclickCreate", function(msg)

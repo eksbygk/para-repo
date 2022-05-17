@@ -1,4 +1,5 @@
--- ！！！暂时加入所有物品，待配置好section后删减
+-- 老爷爷的点击 插件点事件
+-- 需要搜寻的物品有章节增加而增加，表中物品随机出现
 local hat = "blocktemplates/e3.bmax"
 local sunFlower = "blocktemplates/h17.bmax"
 local wine = "blocktemplates/m19.bmax"
@@ -10,26 +11,13 @@ elderItemTable[1] = {
     filename = hat,
     text = "帽子"
 }
--- elderItemTable[2] = {
---     key = 2,
---     filename = sunFlower,
---     text = "向日葵"
--- }
--- elderItemTable[3] = {
---     key = 3,
---     filename = wine,
---     text = "红酒"
--- }
--- elderItemTable[4] = {
---     key = 4,
---     filename = cake,
---     text = "蛋糕"
--- }
 
+local haveTask = true
 local section = 0
 registerBroadcastEvent("section", function(msg)
     section = msg
     if section == 2 then
+        haveTask = true
         -- 在末尾插入。章节二，加入向日葵物品
         table.insert(elderItemTable, {
             key = 2,
@@ -37,6 +25,7 @@ registerBroadcastEvent("section", function(msg)
             text = "向日葵"
         })
     elseif section == 3 then
+        haveTask = true
         -- 章节三，加入红酒，蛋糕
         table.insert(elderItemTable, {
             key = 3,
@@ -53,34 +42,81 @@ end)
 
 local length = 0
 local currentIndex = 0
-local html = ""
+local mainHtml = ""
 function init(entity)
     length = #elderItemTable
     if length == 0 then
-        -- 移除click事件、mount事件，老者头顶电影。所有物品已找到，table不再更新
-        entity:SetOnClickEvent(nil)
+        if _G.section >= 3 then
+            -- 所有物品已找到。如果已处于 第三章以后（第三章开放所有场景），移除点击事件
+            entity:SetOnClickEvent(nil)
+        else
+            -- 未到第三章，table还会增加，暂时阻止弹出对话框
+            haveTask = false
+        end
+        -- 移除mount事件，老者头顶电影。，table不再更新
         entity:SetOnMountEvent(nil)
         return
     end
     currentIndex = math.random(1, length)
-    html = [[<div style="font-size: 28px; width: 1834px;height: 337px;background: url(images/elder/dialog_bg.png);">
-    <div style="margin-top: 200px;margin-left: 500px;width:1134px;height:57px;background: url(images/elder/]] ..
-               elderItemTable[currentIndex].key .. [[.png);"></div></div>]]
+    mainHtml = [[<div style="font-size: 28px; width: 1834px;height: 337px;background: url(images/elder/dialog_bg.png);">
+    <div style="margin-top: 135px;margin-left: 470px;width:1134px;height:57px;background: url(images/elder/]] ..
+                   elderItemTable[currentIndex].key .. [[.png);"></div></div>]]
 end
 init()
 
+local errorHtml = [[<div style="width: 1834px;height: 337px;background: url(images/elder/dialog_bg.png);">
+        <div style="margin-top: 135px;margin-left: 470px;width:1134px;height:57px;background: url(images/custodian/dialog3-3.png);"></div>
+    </div>]]
+local successHtml = [[<div style="width: 1834px;height: 337px;background: url(images/elder/dialog_bg.png);">
+        <div style="margin-top: 135px;margin-left: 470px;width:1134px;height:57px;background: url(images/elder/6.png);"></div>
+    </div>]]
+local normalHtml = [[<div style="width: 1834px;height: 337px;background: url(images/elder/dialog_bg.png);">
+    <div style="margin-top: 135px;margin-left: 470px;width:1134px;height:57px;background: url(images/elder/5.png);"></div>
+</div>]]
+local isNoticeShow = false
+local leafFile = "blocktemplates/j13.bmax"
+
+function createNotice(html)
+    local dialog = window(html, "_ctb", 0, 0, 1834, 337)
+    dialog:SetDesignResolution(1834, 337)
+    dialog:registerEvent("onmouseup", function(event)
+        if (event:button() == "left") then
+            dialog:CloseWindow()
+            isNoticeShow = false
+        end
+    end)
+end
+
 function checkHat(entity, mountedEntity)
     if (mountedEntity.filename == elderItemTable[currentIndex].filename) then
-        entity:Say("谢谢你，送给你一个四叶草")
+        -- 交付正确物品，创建四叶草物品
+        if not isNoticeShow then
+            isNoticeShow = true
+            createNotice(successHtml)
+        end
+
         entity:SetOnMountEvent(nil)
         -- 物品已交付，暂时移除插件点事件
         -- 物品已交付，从表中移除这一条
         table.remove(elderItemTable, currentIndex)
         init(entity)
         wait(0.5)
-        mountedEntity:Destroy()
+        -- 创建四叶草
+        mountedEntity:SetModelFile(leafFile)
+        mountedEntity:SetOnClickEvent("onClickLeaf")
+        mountedEntity:SetCanDrag(true)
+        mountedEntity:SetScaling(0.8)
+        local x, y, z = mountedEntity:GetPosition()
+        mountedEntity:SetPosition(x, y, z - 1.5)
+        mountedEntity:FallDown()
+
     else
-        entity:Say("不需要这个物品，再去找找看吧")
+        -- entity:Say("不需要这个物品，再去找找看吧")
+        if not isNoticeShow then
+            isNoticeShow = true
+            createNotice(errorHtml)
+        end
+
         wait(0.5)
         local x, y, z = mountedEntity:GetPosition()
         mountedEntity:SetPosition(x, y, z - 1.5)
@@ -111,10 +147,29 @@ registerBroadcastEvent("onMountElder", function(msg)
 end)
 
 -- [[ 点击事件 ]]
-local itemHtmlTable = {}
-
+-- local itemHtmlTable = {}
+local isShow = false
 function elderDialog()
-    local dialog = window(html, "_ctb", 0, 0, 1834, 337)
+    if not isShow then
+        isShow = true
+        local dialog = window(mainHtml, "_ctb", 0, 0, 1834, 337)
+        dialog:SetDesignResolution(1834, 337)
+        dialog:registerEvent("onmouseup", function(event)
+            if (event:button() == "left") then
+                dialog:CloseWindow()
+                isShow = false
+            end
+        end)
+    end
+
+end
+
+local normalHtml = [[<div style="width: 1834px;height: 337px;background: url(images/elder/dialog_bg.png);">
+<div style="margin-top: 135px;margin-left: 470px;width:1134px;height:57px;background: url(images/elder/5.png);"></div>
+</div>]]
+
+function normalDialog()
+    local dialog = window(normalHtml, "_ctb", 0, 0, 1834, 337)
     dialog:SetDesignResolution(1834, 337)
     dialog:registerEvent("onmouseup", function(event)
         if (event:button() == "left") then
@@ -127,8 +182,15 @@ registerBroadcastEvent("onClickElder", function(msg)
     msg = commonlib.LoadTableFromString(msg)
     local entity = GameLogic.EntityManager.GetEntity(msg.name)
     if (entity) then
-        entity:SetOnMountEvent("onMountElder")
-        elderDialog()
+        if haveTask then
+            -- haveTask 控制没有任务时不弹出任务对话框
+            stopMovie("notice4")
+            entity:SetOnMountEvent("onMountElder")
+            elderDialog()
+        else
+            -- 无任务
+            normalDialog()
+        end
     end
 end)
 

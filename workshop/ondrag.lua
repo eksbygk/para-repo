@@ -2,123 +2,14 @@ dragTiltModels = {
     ["blocktemplates/w25.bmax"] = {
         angle = -35,
         submodel = "character/particles/fountain2/fountain2.x",
-        dy = -2,
-        dz = -1
+        dy = -1.6,
+        dz = 2
     },
-    ["blocktemplates/towelorange.bmax"] = {
-        angle = 90
-    },
-    ["blocktemplates/towelgreen.bmax"] = {
-        angle = 90
-    },
-    ["blocktemplates/towelblue.bmax"] = {
-        angle = 90
-    },
-    ["blocktemplates/salt.bmax"] = {
-        angle = 45,
-        submodel = "character/CC/05effect/V5/tiaoliao/tiaoliao1.x",
-        dy = -0.85,
-        dFacing = -1.57,
-        offsetInFacing = 0.5
-    },
-    ["blocktemplates/pepper.bmax"] = {
-        angle = 45,
-        submodel = "character/CC/05effect/V5/tiaoliao/tiaoliao.x",
-        dy = -0.85,
-        dFacing = -1.57,
-        offsetInFacing = 0.5
-    },
-    ["blocktemplates/toothbrushred.bmax"] = {
-        angle = 75,
-        sound = "toothbrush.ogg",
-        submodel = "character/CC/05effect/V5/shuaya/shuaya.x",
-        dy = 0.22,
-        dFacing = 1.7,
-        offsetInFacing = -0.7
-    },
-    ["blocktemplates/toothbrushgreen.bmax"] = {
-        angle = 75,
-        sound = "toothbrush.ogg",
-        submodel = "character/CC/05effect/V5/shuaya/shuaya.x",
-        dy = 0.22,
-        dFacing = 1.7,
-        offsetInFacing = -0.7
-    },
-    ["blocktemplates/toothbrushblue.bmax"] = {
-        angle = 75,
-        sound = "toothbrush.ogg",
-        submodel = "character/CC/05effect/V5/shuaya/shuaya.x",
-        dy = 0.22,
-        dFacing = 1.7,
-        offsetInFacing = -0.7
-    },
-    ["blocktemplates/toothbrushorange.bmax"] = {
-        angle = 75,
-        sound = "toothbrush.ogg",
-        submodel = "character/CC/05effect/V5/shuaya/shuaya.x",
-        dy = 0.22,
-        dFacing = 1.7,
-        offsetInFacing = -0.7
-    },
-    ["blocktemplates/toothpaste.bmax"] = {
-        angle = 75,
-        sound = "toothpaste.ogg",
-        submodel = "character/CC/05effect/V5/shuaya/shuaya.x",
-        dy = 0,
-        dFacing = 1.57,
-        offsetInFacing = 0
-    },
-    ["blocktemplates/showerjell.bmax"] = {
-        angle = 75,
-        submodel = "character/CC/05effect/V5/shuaya/shuaya.x",
-        dy = 0.22,
-        dFacing = 1.7,
-        offsetInFacing = -0.7
-    },
-    ["blocktemplates/shampoo.bmax"] = {
-        angle = 75,
-        submodel = "character/CC/05effect/V5/shuaya/shuaya.x",
-        dy = 0.22,
-        dFacing = 1.7,
-        offsetInFacing = -0.7
-    },
-    ["blocktemplates/presspowdercushion.bmax"] = {
-        angle = 75,
-        sound = "showerjell.ogg",
-        submodel = "character/CC/05effect/V5/huazhuang/huazhuang.x",
-        facing = 3.14,
-        dy = 0
-    },
-    ["blocktemplates/hairdrier.bmax"] = {
-        angle = 0,
-        submodel = "character/CC/05effect/V5/fengtong/fengtong.x",
-        dy = 0.42,
-        dFacing = -1.57,
-        offsetInFacing = -0.5
-    },
-    ["blocktemplates/perfume.bmax"] = {
-        angle = 0,
-        submodel = "character/CC/05effect/V5/fengtong/xiangshui.x",
-        dy = 0.3,
-        facing = 3.14
-    },
-    ["blocktemplates/hairsprayblue.bmax"] = {
-        angle = 0,
-        sound = "showerjell.ogg",
-        submodel = "character/CC/05effect/V5/fengtong/xiangshui.x",
-        dy = 0.7,
-        facing = -1.57,
-        dFacing = 0,
-        offsetInFacing = 0.2
-    },
-    ["blocktemplates/hairspraypink.bmax"] = {
-        angle = 0,
-        sound = "showerjell.ogg",
-        submodel = "character/CC/05effect/V5/fengtong/xiangshui.x",
-        dy = 0.7,
-        facing = -1.57,
-        dFacing = 0,
-        offsetInFacing = 0.2
+    ["blocktemplates/m9.bmax"] = {
+        angle = -35,
+        submodel = "character/CC/05effect/V5/yanhua/yanhua.x",
+        scaling = 0.3,
+        facing = 180
     }
 }
 
@@ -147,7 +38,7 @@ registerBroadcastEvent("__entity_onbegindrag", function(msg)
                     subEntity:SetOnClickEvent(nil)
                     subEntity:SetCanDrag(false)
                     subEntity:EnablePhysics(false)
-                    subEntity:SetScaling(1)
+                    subEntity:SetScaling(result.scaling or 1)
                     if (result.facing) then
                         subEntity:SetFacing(subEntity:GetFacing() + result.facing)
                     end
@@ -157,7 +48,7 @@ registerBroadcastEvent("__entity_onbegindrag", function(msg)
                         x = x + math.cos(facing) * result.offsetInFacing
                         z = z - math.sin(facing) * result.offsetInFacing
                     end
-                    subEntity:SetPosition(x, y + (result.dy or 0), z)
+                    subEntity:SetPosition(x + (result.dx or 0), y + (result.dy or 0), z + (result.dz or 0))
                     subEntity:LinkTo(entity)
                 end
             end

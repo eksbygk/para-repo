@@ -1,12 +1,12 @@
 local dialogTable = {
-    notThis = [[<div style="width: 1834px;height: 337px;background: url(images/custodian/dialog0.png);">
-        <div style="margin-top: 200px;margin-left: 500px;width:1134px;height:28px;background: url(images/custodian/dialog3-3.png);"></div>
+    notThis = [[<div style="width: 1834px;height: 337px;background: url(images/custodian/dialog-bg.png);">
+        <div style="margin-top: 200px;margin-left: 500px;width:1134px;height:57px;background: url(images/custodian/dialog3-3.png);"></div>
     </div>]],
-    right = [[<div style="width: 1834px;height: 337px;background: url(images/custodian/dialog0.png);">
-        <div style="margin-top: 200px;margin-left: 600px;width:1134px;height:28px;background: url(images/custodian/dialog3-4.png);"></div>
+    right = [[<div style="width: 1834px;height: 337px;background: url(images/custodian/dialog-bg.png);">
+        <div style="margin-top: 200px;margin-left: 600px;width:1134px;height:57px;background: url(images/custodian/dialog3-4.png);"></div>
     </div>]],
-    notCold = [[<div style="width: 1834px;height: 337px;background: url(images/custodian/dialog0.png);">
-        <div style="margin-top: 200px;margin-left: 500px;width:1134px;height:28px;background: url(images/custodian/dialog3-5.png);"></div>
+    notCold = [[<div style="width: 1834px;height: 337px;background: url(images/custodian/dialog-bg.png);">
+        <div style="margin-top: 200px;margin-left: 500px;width:1134px;height:57px;background: url(images/custodian/dialog3-5.png);"></div>
     </div>]]
 }
 
@@ -26,7 +26,10 @@ end
 local colaColdTable = {"blocktemplates/cupredcola_cold.bmax", "blocktemplates/cola_cold.bmax"}
 local colaTable = {"blocktemplates/cupredcola.bmax", "blocktemplates/cola.bmax"}
 
-local gule = "blocktemplates/k23.bmax"
+local gule = {
+    filename = "blocktemplates/k23.bmax",
+    spec = "特制胶水(任务收集物品)"
+}
 
 function checkFood(entity, mountedEntity)
     local filename = mountedEntity:GetModelFile()
@@ -35,7 +38,9 @@ function checkFood(entity, mountedEntity)
         local fogEntity = GameLogic.EntityManager.GetEntity(fogname)
         renderDialog("right")
         fogEntity:Destroy()
-        mountedEntity:SetModelFile(gule)
+        mountedEntity:SetModelFile(gule.filename)
+        mountedEntity.tag = gule.spec
+        mountedEntity:SetOnClickEvent("showTag")
         mountedEntity:SetScaling(1)
         local x, y, z = mountedEntity:GetPosition()
         mountedEntity:SetPosition(x - 2, y, z)
