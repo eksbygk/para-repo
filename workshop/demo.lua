@@ -10,6 +10,8 @@ dialog:registerEvent("onmouseup", function(event)
     end
 end)
 
+cmd("/setblock 19566 12 19373 (3 0 6) 0")
+
 -- html function 中的参数
 function showTip(i, mcmlNode)
     local string = mcmlNode:GetAttribute("param")

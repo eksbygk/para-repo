@@ -3,7 +3,7 @@
 local hat = "blocktemplates/e3.bmax"
 local sunFlower = "blocktemplates/h17.bmax"
 local wine = "blocktemplates/m19.bmax"
-local cake = "blocktemplates/c24.bmax"
+local cake = "blocktemplates/n2.bmax"
 
 local elderItemTable = {}
 elderItemTable[1] = {

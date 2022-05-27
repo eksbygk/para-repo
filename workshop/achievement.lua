@@ -9,15 +9,6 @@ local taskBoardtail = [[</div></div>]]
 function initTaskBoardHtml()
     local html = ""
     for index = 0, 11 do
-        -- if isFull[index + 1] == "f" then
-        --     html =
-        --         html .. [[<span style="margin-left: 12px;width: 166px; height: 265px; background: url(achievement/]] ..
-        --             index .. isFull[index + 1] .. [[.png)"></span>]]
-        -- else
-        --     html = html .. [[<span param="]] .. index ..
-        --                [[" onclick="showTip" style="margin-left: 12px;width: 166px; height: 265px; background: url(achievement/]] ..
-        --                index .. isFull[index + 1] .. [[.png)"></span>]]
-        -- end
         html = html .. [[<span param="]] .. index ..
                    [[" onclick="showTip" style="margin-left: 12px;width: 166px; height: 265px; background: url(achievement/]] ..
                    index .. isFull[index + 1] .. [[.png)"></span>]]
@@ -99,11 +90,11 @@ end)
 local clickCount = 0
 registerBroadcastEvent("clickTip", function(msg)
     clickCount = clickCount + 1
-    if clickCount == 5 then
+    if clickCount == 50 then
         isFull[9] = "f"
         tip("获得成就：刨根问底")
         initTaskBoard()
-    elseif clickCount == 10 then
+    elseif clickCount == 100 then
         isFull[10] = "f"
         tip("获得成就：孜孜不倦")
         initTaskBoard()
@@ -128,10 +119,10 @@ registerBroadcastEvent("giftBox", function(msg)
     end
 end)
 
-local tipsTable = {"当玩家收集2片四叶草时获得：你从哪来",
-                   "当玩家收集4片四叶草时获得：找到你了",
-                   "当玩家收集6片四叶草时获得：给你幸运",
-                   "当玩家收集齐全8片四叶草时获得：最佳拍档",
+local tipsTable = {"当玩家点击收集2片四叶草时获得：你从哪来",
+                   "当玩家点击收集4片四叶草时获得：找到你了",
+                   "当玩家点击收集6片四叶草时获得：给你幸运",
+                   "当玩家点击收集齐全8片四叶草时获得：最佳拍档",
                    "当玩家合成了1个最高等级的花草时获得：园艺鉴赏",
                    "当玩家合成了1个最大草团时获得：园艺美学",
                    "当玩家在世界中体验的时长达到30分钟时获得：用力思考",
@@ -167,17 +158,6 @@ function toggleTask()
 end
 
 local iconHtml =
-    [[<div onclick="toggleTask" style="width: 80px;height: 80px;background: url(achievement/achievement.png);"></div>]]
+    [[<div><div onclick="toggleTask" style="width: 80px;height: 80px;background: url(achievement/achievement.png);"></div></div>]]
 
 local icon = window(iconHtml, "_lt", 50, 110, 80, 80)
-
--- icon:registerEvent("onmouseup", function(event)
---     if (event:button() == "left") then
---         if isShow then
---             hideTaskWnd()
---         else
---             taskBoard:show()
---             isShow = true
---         end
---     end
--- end)

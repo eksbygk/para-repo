@@ -87,7 +87,7 @@ itemTable3 = {
         type = "待收集"
     },
     [itemFile3.steelPlate] = {
-        num = 5,
+        num = 1,
         join = " * ",
         title = "钢板 ",
         type = "待收集"
@@ -192,8 +192,6 @@ html3 = [[
             <div>
                 <span style="width: 120px;margin-bottom: 8px;">
                     <%=itemTable[itemFile3.steelPlate].title%>
-                        <pe:label value='<%=tostring(itemTable[itemFile3.steelPlate].join)%>' getter="value" />
-                        <pe:label value='<%=tostring(itemTable[itemFile3.steelPlate].num)%>' getter="value" />
                 </span>
                 <pe:label value='<%=itemTable[itemFile3.steelPlate].type%>' getter="value" />
             </div>
@@ -220,7 +218,7 @@ taskDeskEntity = GameLogic.EntityManager.GetEntity("workshop_task_desk")
 registerBroadcastEvent("showTasks", function(fromName)
     if flagTask then
         flagTask = false
-        taskWnd = window(html, "_lt", 50, 180, 10, 10)
+        taskWnd = window(html, "_lt", 50, 200, 10, 10)
         taskDeskEntity:SetOnMountEvent("onMountCheckItem")
     end
 end)
@@ -230,7 +228,7 @@ itemNum = 0
 
 -- dialog
 local dialogHtml = [[<div style="width: 1834px;height: 337px;background: url(images/father/dialog2.png);">
-<div style="margin-top: 200px;margin-left: 500px;width:1134px;height:28px;background: url(images/father/dialog4-1.png);"></div>
+<div style="margin-top: 135px;margin-left: 470px;width:1134px;height:28px;background: url(images/father/dialog4-1.png);"></div>
 </div>]]
 
 local foundation = {
@@ -239,27 +237,63 @@ local foundation = {
     spec = "小屋模型地基，我现在要去找更多的材料帮助爸爸把小屋搭建起来。"
 }
 
+-- 小屋模型
+local houseModel = {}
+houseModel[1] = {
+    filename = "blocktemplates/g1.bmax",
+    spec = "小屋模型地基，我现在要去找更多的材料帮助爸爸把小屋搭建起来。"
+}
+houseModel[2] = {
+    filename = "blocktemplates/g2.bmax",
+    spec = "小屋模型结构，我现在要去找更多的材料帮助爸爸把小屋搭建起来。"
+}
+-- houseModel[3] = {
+--     filename = "blocktemplates/g3.bmax",
+--     spec = "小屋模型楼层，我现在要去找更多的材料帮助爸爸把小屋搭建起来。"
+-- }
+
 local itemBase = GameLogic.EntityManager.GetEntity("workshop_item")
+local houseModelName = ""
 function handleStartSection(section, entity)
     -- section == 2表示第一章已结束，第二章开始
     if section == 2 then
-        -- cmd("/setblock 19275,5,19624 192")
-        cmd("/setblock 19242,6,19525 192")
-        local subEntity = GameLogic.EntityManager.GetEntity(entity.name .. "_foundation")
+        cmd("/setblock 19289,5,19654 192")
+        houseModelName = entity.name .. "_houseModel"
+        local subEntity = GameLogic.EntityManager.GetEntity(houseModelName)
         if not subEntity then
             subEntity = entity:CloneMe()
-            subEntity:SetName(entity.name .. "_foundation")
-            subEntity:SetModelFile(foundation.filename)
-            subEntity.tag = foundation.spec
+            subEntity:SetName(houseModelName)
+            subEntity:SetModelFile(houseModel[1].filename)
+            subEntity.tag = houseModel[1].spec
             subEntity:SetOnClickEvent("showTag")
             subEntity:SetCanDrag(false)
             subEntity:SetScaling(2.47)
             subEntity:SetFacing(90 * math.pi / 180)
             subEntity:SetPosition(20042.1, -123.7, 20392.4)
         end
+    elseif section == 3 then
+        cmd("/setblock 19289,5,19659 192")
+        local subEntity = GameLogic.EntityManager.GetEntity(houseModelName)
+        if subEntity then
+            subEntity:SetModelFile(houseModel[2].filename)
+            subEntity.tag = houseModel[2].spec
+        end
+    elseif section == 4 then
+        cmd("/setblock 19289,5,19678 192")
+        local subEntity = GameLogic.EntityManager.GetEntity(houseModelName)
+        if subEntity then
+            subEntity:Destroy()
+        end
     end
 end
 
+local finhtmlTable = {[[<div style="width: 1834px;height: 337px;background: url(images/father/dialog2.png);">
+        <div style="margin-top: 135px;margin-left: 470px;width:1134px;height:28px;background: url(images/father/fin1.png);"></div>
+    </div>]], [[<div style="width: 1834px;height: 337px;background: url(images/father/dialog2.png);">
+        <div style="margin-top: 135px;margin-left: 470px;width:1134px;height:57px;background: url(images/father/fin2.png);"></div>
+    </div>]], [[<div style="width: 1834px;height: 337px;background: url(images/father/dialog2.png);">
+        <div style="margin-top: 135px;margin-left: 470px;width:1134px;height:57px;background: url(images/father/fin3.png);"></div>
+    </div>]]}
 local section = 1
 local flag = true
 local function renderDialog(entity)
@@ -280,11 +314,7 @@ local function renderDialog(entity)
                     taskDeskEntity:SetOnMountEvent(nil)
                     cmd("/setblock 19188 6 19506 (0 9 129) 0")
                     taskWnd:CloseWindow()
-                    local dialogFinal = window([[
-                        <div style="width: 1834px;height: 337px;background: url(images/father/dialog2.png);">
-                            <div style="margin-top: 200px;margin-left: 500px;width:1134px;height:28px;background: url(images/father/dialog4.png);"></div>
-                        </div>
-                    ]], "_ctb", 0, 0, 1834, 337)
+                    local dialogFinal = window(finhtmlTable[section - 1], "_ctb", 0, 0, 1834, 337)
                     dialogFinal:SetDesignResolution(1834, 337)
                     dialogFinal:registerEvent("onmouseup", function(event)
                         if (event:button() == "left") then
@@ -303,8 +333,8 @@ registerBroadcastEvent("onMountCheckItem", function(msg)
     msg = commonlib.LoadTableFromString(msg)
     local entity = GameLogic.EntityManager.GetEntity(msg.name)
     local mountedEntity = GameLogic.EntityManager.GetEntity(msg.mountedEntityName)
-    local mountedFileName = mountedEntity:GetModelFile()
     if entity and mountedEntity then
+        local mountedFileName = mountedEntity:GetModelFile()
         if (itemTable[mountedFileName] and itemTable[mountedFileName].type == "待收集") then
             playSound("music/item.ogg")
             local entity4Clone = mountedEntity

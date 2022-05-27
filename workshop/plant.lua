@@ -2,7 +2,6 @@
 local seedFileName = {
     ["blocktemplates/w6.bmax"] = {
         filename = "blocktemplates/w29.bmax"
-
     },
     ["blocktemplates/w7.bmax"] = {
         filename = "blocktemplates/w27.bmax"
@@ -28,13 +27,16 @@ local budFileName = {
 -- 花苗->花卉
 local flowerFileName = {
     ["blocktemplates/w22.bmax"] = {
-        filename = "blocktemplates/w32.bmax"
+        filename = "blocktemplates/w32.bmax",
+        spec = "橙色大花花"
     },
     ["blocktemplates/w21.bmax"] = {
-        filename = "blocktemplates/w30.bmax"
+        filename = "blocktemplates/w30.bmax",
+        spec = "绿色大花花"
     },
     ["blocktemplates/w20.bmax"] = {
-        filename = "blocktemplates/w31.bmax"
+        filename = "blocktemplates/w31.bmax",
+        spec = "红色大花花"
     }
 }
 
@@ -53,7 +55,8 @@ function createSeed(entity, hoverEntity)
             seedEntity = entity:CloneMe()
             seedEntity:SetName(entity.name .. "_seed")
             seedEntity:SetModelFile(seedFileName[hoverEntity.filename].filename)
-            seedEntity:SetOnClickEvent(nil)
+            seedEntity:SetOnClickEvent("showTag")
+            seedEntity.tag = "我需要浇水"
             seedEntity:SetCanDrag(false)
             seedEntity:EnablePhysics(false)
             seedEntity:SetScaling(0.6)
@@ -72,8 +75,9 @@ function replaceToBud(entity, hoverEntity)
         subEntity = GameLogic.EntityManager.GetEntity(entity.name .. "_seed")
         newSubEntityName = entity.name .. "_seed_bud"
         if subEntity and budFileName[subEntity.filename] then
-            local newSubEntityFileName = budFileName[subEntity.filename].filename
-            subEntity:SetModelFile(newSubEntityFileName)
+            local newSubEntity = budFileName[subEntity.filename].filename
+            subEntity:SetModelFile(newSubEntity)
+            subEntity.tag = "我需要施肥"
             subEntity:SetName(newSubEntityName)
             subEntity:SetScaling(1.2)
         end
@@ -85,8 +89,8 @@ function replaceToBud(entity, hoverEntity)
         subEntity = GameLogic.EntityManager.GetEntity(entity.name)
         newSubEntityName = entity.name .. "_bud"
         if subEntity then
-            local newSubEntityFileName = budFileName[entity.filename].filename
-            subEntity:SetModelFile(newSubEntityFileName)
+            local newSubEntity = budFileName[entity.filename].filename
+            subEntity:SetModelFile(newSubEntity)
             subEntity:SetName(newSubEntityName)
             subEntity:SetScaling(1.2)
         end
@@ -103,8 +107,10 @@ function replaceToFlower(entity, hoverEntity)
         subEntity = GameLogic.EntityManager.GetEntity(entity.name .. "_seed_bud")
         newSubEntityName = entity.name .. "_seed_bud_flower"
         if subEntity and flowerFileName[subEntity.filename] then
-            local newSubEntityFileName = flowerFileName[subEntity.filename].filename
-            subEntity:SetModelFile(newSubEntityFileName)
+            local newSubEntity = flowerFileName[subEntity.filename]
+            subEntity:SetModelFile(newSubEntity.filename)
+            subEntity.tag = newSubEntity.spec
+            -- subEntity:SetOnClickEvent("showTag")
             subEntity:SetName(newSubEntityName)
             subEntity:SetScaling(1.5)
             subEntity:SetCanDrag(true)
@@ -115,8 +121,10 @@ function replaceToFlower(entity, hoverEntity)
         subEntity = GameLogic.EntityManager.GetEntity(entity.name)
         newSubEntityName = entity.name .. "_bud_flower"
         if subEntity then
-            local newSubEntityFileName = flowerFileName[entity.filename].filename
-            subEntity:SetModelFile(newSubEntityFileName)
+            local newSubEntity = flowerFileName[entity.filename]
+            subEntity:SetModelFile(newSubEntity.filename)
+            subEntity.tag = newSubEntity.spec
+            -- subEntity:SetOnClickEvent("showTag")
             subEntity:SetName(newSubEntityName)
             subEntity:SetScaling(1.5)
             subEntity:SetCanDrag(true)
@@ -165,7 +173,8 @@ function createSeedColor(entity, hoverEntity)
             seedEntity = entity:CloneMe()
             seedEntity:SetName(entity.name .. "_seed")
             seedEntity:SetModelFile(seedColor[hoverEntity.filename].filename)
-            seedEntity:SetOnClickEvent(nil)
+            seedEntity:SetOnClickEvent("showTag")
+            seedEntity.tag = "我需要浇水"
             seedEntity:SetCanDrag(false)
             seedEntity:EnablePhysics(false)
             seedEntity:SetScaling(1.4)
@@ -184,8 +193,9 @@ function replaceToBudColor(entity, hoverEntity)
         subEntity = GameLogic.EntityManager.GetEntity(entity.name .. "_seed")
         newSubEntityName = entity.name .. "_seed_bud"
         if subEntity and budColor[subEntity.filename] then
-            local newSubEntityFileName = budColor[subEntity.filename].filename
-            subEntity:SetModelFile(newSubEntityFileName)
+            local newSubEntity = budColor[subEntity.filename].filename
+            subEntity:SetModelFile(newSubEntity)
+            subEntity.tag = "我需要施肥"
             subEntity:SetName(newSubEntityName)
             subEntity:SetScaling(1.2)
         end
@@ -197,8 +207,8 @@ function replaceToBudColor(entity, hoverEntity)
         subEntity = GameLogic.EntityManager.GetEntity(entity.name)
         newSubEntityName = entity.name .. "_bud"
         if subEntity then
-            local newSubEntityFileName = budColor[entity.filename].filename
-            subEntity:SetModelFile(newSubEntityFileName)
+            local newSubEntity = budColor[entity.filename].filename
+            subEntity:SetModelFile(newSubEntity)
             subEntity:SetName(newSubEntityName)
             subEntity:SetScaling(1.2)
         end
@@ -219,9 +229,9 @@ function replaceToFlowerColor(entity, hoverEntity)
             local newSubEntity = flowerColor[subEntity.filename]
             subEntity:SetModelFile(newSubEntity.filename)
             subEntity.tag = newSubEntity.spec
-            subEntity:SetOnClickEvent("showTag")
+            -- subEntity:SetOnClickEvent("showTag")
             subEntity:SetName(newSubEntityName)
-            subEntity:SetScaling(0.5)
+            subEntity:SetScaling(0.3)
             subEntity:SetCanDrag(true)
         end
     end
@@ -234,9 +244,9 @@ function replaceToFlowerColor(entity, hoverEntity)
             local newSubEntity = flowerColor[subEntity.filename]
             subEntity:SetModelFile(newSubEntity.filename)
             subEntity.tag = newSubEntity.spec
-            subEntity:SetOnClickEvent("showTag")
+            -- subEntity:SetOnClickEvent("showTag")
             subEntity:SetName(newSubEntityName)
-            subEntity:SetScaling(0.5)
+            subEntity:SetScaling(0.3)
             subEntity:SetCanDrag(true)
         end
     end
@@ -247,7 +257,7 @@ function replaceToFlowerColor(entity, hoverEntity)
     end
 end
 
-function pouring(hoverEntity)
+function pouring(entity, hoverEntity)
     run(function()
         if (not hoverEntity.isPouring) then
             hoverEntity.isPouring = true
@@ -276,7 +286,7 @@ registerBroadcastEvent("onHoverField", function(msg)
         hoverFileName = hoverEntity:GetModelFile()
         -- 普通的花
         if (hoverFileName == fertilizerFilename or seedFileName[hoverFileName]) then
-            pouring(hoverEntity)
+            pouring(entity, hoverEntity)
             -- 新增的彩色种子提示 start
             if budColor[hoverFileName] or flowerColor[hoverFileName] then
                 hoverEntity:Say("彩色种子需要特殊水壶和肥料")
@@ -294,7 +304,7 @@ registerBroadcastEvent("onHoverField", function(msg)
 
         -- 彩色的种子（也是拷贝上面的）
         if (hoverFileName == fertilizerColor or seedColor[hoverFileName]) then
-            pouring(hoverEntity)
+            pouring(entity, hoverEntity)
             -- 新增的彩色种子提示 start
             if budFileName[hoverFileName] or flowerFileName[hoverFileName] then
                 hoverEntity:Say("请使用普通的水壶和肥料")

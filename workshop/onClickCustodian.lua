@@ -93,6 +93,10 @@ registerBroadcastEvent("getMouse", function(msg)
 end)
 
 local fristClick = true
+local key = {
+    filename = "blocktemplates/k17.bmax",
+    spec = "银制钥匙，用来打开仓库门"
+}
 registerBroadcastEvent("onClickCustodian", function(msg)
     stopMovie("notice1")
     msg = commonlib.LoadTableFromString(msg)
@@ -106,8 +110,9 @@ registerBroadcastEvent("onClickCustodian", function(msg)
                     local subEntity = GameLogic.EntityManager.GetEntity(msg.name .. "_key")
                     subEntity = entity:CloneMe()
                     subEntity:SetName(msg.name .. "_key")
-                    subEntity:SetModelFile("blocktemplates/k17.bmax")
-                    subEntity:SetOnClickEvent(nil)
+                    subEntity:SetModelFile(key.filename)
+                    subEntity.tag = key.spec
+                    subEntity:SetOnClickEvent("showTag")
                     subEntity:SetScaling(1.27)
                     subEntity:SetFacing(-90 * 3.14 / 180)
                     local x, y, z = subEntity:GetPosition()

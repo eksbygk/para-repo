@@ -23,17 +23,17 @@ local table4MustardSauce = {
         filename = "blocktemplates/m20.bmax"
     },
     ["blocktemplates/c8.bmax"] = {
-        filename = "blocktemplates/m20.bmax"
+        filename = "blocktemplates/m21.bmax"
     },
     ["blocktemplates/m23.bmax"] = {
         filename = "blocktemplates/m21.bmax"
     },
     ["blocktemplates/c9.bmax"] = {
-        filename = "blocktemplates/m21.bmax"
+        filename = "blocktemplates/m20.bmax"
     }
 }
 
-function Pouring(hoverEntity)
+function pouring(entity, hoverEntity)
     run(function()
         if (not hoverEntity.isPouring) then
             hoverEntity.isPouring = true
@@ -61,7 +61,7 @@ registerBroadcastEvent("onHoverSauce", function(msg)
     if (entity and hoverEntity) then
         local entityFile = entity.filename
         local hoverEntityFile = hoverEntity.filename
-        Pouring(hoverEntity)
+        pouring(entity, hoverEntity)
         if entityFile == sauce then
             -- 酱油碟
             if table4Sauce[hoverEntityFile] then

@@ -37,6 +37,7 @@ function checkPlant(entity, mountedEntity)
                 boxEntity:SetOnClickEvent("showTag")
                 boxEntity:SetOnMountEvent(nil)
                 entity:Say("送你一个橙色方块")
+                playSound("music/npc.mp3")
                 getPlants = true
                 broadcast("gardenerTask1", "") --   通知click方块
             end
@@ -66,7 +67,7 @@ local boxGrass = {
     spec = "草本方块(未鉴定物品)"
 }
 local noBoxHtml = [[<div style="width: 1834px;height: 337px;background: url(images/gardener/dialog.png);">
-<div style="margin-top: 200px;margin-left: 500px;width:1134px;height:57px;background: url(images/gardener/flower3.png);"></div>
+<div style="margin-top: 135px;margin-left: 470px;width:1134px;height:57px;background: url(images/gardener/flower3.png);"></div>
 </div>]]
 function checkFlower(entity, mountedEntity)
     local filename = mountedEntity.filename
@@ -89,6 +90,7 @@ function checkFlower(entity, mountedEntity)
         wait(0.5)
         -- mountedEntity:Destroy()
         entity:Say("谢谢你,送你一个草本方块")
+        playSound("music/npc.mp3")
         wait(0.5)
         mountedEntity:SetModelFile(boxGrass.filename)
         mountedEntity.tag = boxGrass.spec
@@ -115,11 +117,14 @@ local sushiWithoutSauce = {
     ["blocktemplates/m22.bmax"] = true
 }
 local html = [[<div style="width: 1834px;height: 337px;background: url(images/gardener/dialog.png);">
-        <div style="margin-top: 200px;margin-left: 500px;width:1134px;height:57px;background: url(images/gardener/sushiError.png);"></div>
+        <div style="margin-top: 135px;margin-left: 470px;width:1134px;height:57px;background: url(images/gardener/sushiError.png);"></div>
     </div>]]
 
 local sushiNum = 0
-local steal = "blocktemplates/m27.bmax"
+local steal = {
+    filename = "blocktemplates/m27.bmax",
+    spec = "一块钢板"
+}
 function checkSushi(entity, mountedEntity)
     local filename = mountedEntity.filename
     local x, y, z = entity:GetPosition()
@@ -131,9 +136,11 @@ function checkSushi(entity, mountedEntity)
             mountedEntity:Destroy()
         elseif sushiNum == 2 then
             entity:Say("谢谢, 给你钢板")
+            playSound("music/npc.mp3")
             wait(0.5)
             mountedEntity:SetPosition(x, y, z - 1.5)
-            mountedEntity:SetModelFile(steal)
+            mountedEntity:SetModelFile(steal.filename)
+            mountedEntity.tag = steal.spec
             mountedEntity:SetScaling(1)
             entity:SetOnClickEvent(nil)
             entity:SetOnMountEvent(nil)
