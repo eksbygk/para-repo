@@ -1,24 +1,22 @@
 local waterContainers = {
-    ["blocktemplates/milk.bmax"] = {
-        ["blocktemplates/cupred.bmax"] = {
-            filename = "blocktemplates/cupredmilk.bmax"
-        }
-    },
     ["blocktemplates/cola.bmax"] = {
         ["blocktemplates/cupred.bmax"] = {
-            filename = "blocktemplates/cupredcola.bmax"
+            filename = "blocktemplates/cupredcola.bmax",
+            spec = "装了可乐汽水的杯子"
         }
     },
     ["blocktemplates/peachsoda.bmax"] = {
         ["blocktemplates/cupred.bmax"] = {
-            filename = "blocktemplates/cupredpeachsoda.bmax"
+            filename = "blocktemplates/cupredpeachsoda.bmax",
+            spec = "装了桃子味汽水的杯子"
         }
     },
     ["blocktemplates/fanta.bmax"] = {
         ["blocktemplates/cupred.bmax"] = {
-            filename = "blocktemplates/cupredfanta.bmax"
+            filename = "blocktemplates/cupredfanta.bmax",
+            spec = "装了橙子味汽水的杯子"
         }
-    },
+    }
 }
 local drinkTable = {
     ["blocktemplates/cupredorange.bmax"] = {
@@ -54,19 +52,24 @@ registerBroadcastEvent("__entity_onhover", function(msg)
     local hoverEntity = GameLogic.EntityManager.GetEntity(msg.hoverEntityName)
     run(function()
         if (entity and hoverEntity) then
+
             local filenameTop = hoverEntity:GetModelFile() or ""
             local filenameBottom = entity:GetModelFile() or ""
 
             -- pour water into another cup
             local waterItem = waterContainers[filenameTop]
             if (waterItem and not hoverEntity.isPouring) then
+
                 local result = waterItem[filenameBottom]
                 if (result) then
+                    playSound("music/d.mp3")
                     hoverEntity.isPouring = true
                     if (hoverEntity:IsAutoTurningDuringDragging()) then
                         hoverEntity:SetFacing(entity:GetFacing())
+
                     end
                     if (waterItem.playSpawnEffect) then
+
                         local x, y, z = entity:GetPosition()
                         mygame.PlaySpawnEffect(x, y, z)
                     end
@@ -76,6 +79,7 @@ registerBroadcastEvent("__entity_onhover", function(msg)
                         wait(0.05)
                     end
                     entity:SetModelFile(result.filename)
+                    entity.tag = result.spec
                     for i = 10, 0, -1 do
                         hoverEntity:SetPitch(-i / 10 * math.pi / 2)
                         wait(0.05)

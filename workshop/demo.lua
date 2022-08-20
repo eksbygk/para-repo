@@ -1,6 +1,6 @@
-html = [[<div style="width: 1834px;height: 337px;background: url(images/dialog3-0.png);">
-        <div style="margin-top: 200px;margin-left: 500px;width:1134px;height:28px;background: url(images/dialog3-3.png);"></div>
-    </div>]]
+html = [[<div style="width: 1834px;height: 337px;background: url(images/elder/dialog_bg.png);">
+<div style="margin-top: 135px;margin-left: 470px;width:1134px;height:57px;background: url(images/custodian/dialog3-3.png);"></div>
+</div>]]
 
 local dialog = window(html, "_ctb", 0, 0, 1834, 337)
 dialog:SetDesignResolution(1834, 337)
@@ -10,6 +10,15 @@ dialog:registerEvent("onmouseup", function(event)
     end
 end)
 
+cmd("/setblock 19566 12 19373 (3 0 6) 0")
+
+-- html function 中的参数
+function showTip(i, mcmlNode)
+    local string = mcmlNode:GetAttribute("param")
+    local number = tonumber(mcmlNode:GetAttribute("param"))
+end
+
+-- Mount
 registerBroadcastEvent("onMountEvent", function(msg)
     msg = commonlib.LoadTableFromString(msg)
     local entity = GameLogic.EntityManager.GetEntity(msg.name)
@@ -19,6 +28,7 @@ registerBroadcastEvent("onMountEvent", function(msg)
     end
 end)
 
+-- Hover
 registerBroadcastEvent("onHoverEvent", function(msg)
     msg = commonlib.LoadTableFromString(msg)
     local entity = GameLogic.EntityManager.GetEntity(msg.name)
@@ -28,8 +38,55 @@ registerBroadcastEvent("onHoverEvent", function(msg)
     end
 end)
 
--- API
+-- Create simple
+local subEntity = GameLogic.EntityManager.GetEntity(msg.name .. "_key")
+if (not subEntity) then
+    subEntity = entity:CloneMe()
+    subEntity:SetName(msg.name .. "_key")
+    subEntity:SetModelFile(key.filename)
+    subEntity.tag = key.spec
+    subEntity:SetOnClickEvent("showTag")
+    subEntity:SetCanDrag(true)
+    subEntity:EnablePhysics(true)
+    subEntity:SetAutoTurningDuringDragging(true)
+    subEntity:SetScaling(1)
+    subEntity:SetPosition(19156, 8, 19565)
+    subEntity:FallDown()
+end
 
+-- Create
+registerBroadcastEvent("onclickCreate", function(msg)
+    msg = commonlib.LoadTableFromString(msg)
+    local entity = GameLogic.EntityManager.GetEntity(msg.name)
+    if (entity) then
+        if (entity.tag == "open") then
+            entity.tag = "close"
+        else
+            entity.tag = "open"
+        end
+        local subEntity = GameLogic.EntityManager.GetEntity(msg.name .. "_water")
+        if (entity.tag == "open") then
+            if (not subEntity) then
+                subEntity = entity:CloneMe()
+                subEntity:SetName(msg.name .. "_water")
+                subEntity:SetModelFile(waterModelFile)
+                subEntity:SetOnClickEvent(nil)
+                subEntity:SetCanDrag(false)
+                subEntity:EnablePhysics(false)
+                subEntity:SetScaling(1)
+                subEntity:SetFacing(subEntity:GetFacing() + math.pi)
+                local x, y, z = subEntity:GetPosition()
+                subEntity:SetPosition(x, y - 2.5, z + 0.2)
+            end
+        else
+            if (subEntity) then
+                subEntity:Destroy()
+            end
+        end
+    end
+end)
+
+-- API
 registerBroadcastEvent("onMountEvent", function(msg)
     msg = commonlib.LoadTableFromString(msg)
     local entity = GameLogic.EntityManager.GetEntity(msg.name)
@@ -40,6 +97,7 @@ registerBroadcastEvent("onMountEvent", function(msg)
         mountedEntity:SetModelFile()
         mountedEntity:SetOnClickEvent(nil)
         mountedEntity:SetOnMountEvent(nil)
+        mountedEntity:SetOnHoverEvent(nil)
         mountedEntity:SetCanDrag(false)
         mountedEntity:EnablePhysics(false)
         mountedEntity:SetScaling(1)
