@@ -1,41 +1,35 @@
-html = [[<div style="width: 1834px;height: 337px;background: url(images/dialog3-0.png);">
+html =
+    [[<div style="width: 1834px;height: 337px;background: url(images/dialog3-0.png);">
         <div style="margin-top: 200px;margin-left: 500px;width:1134px;height:28px;background: url(images/dialog3-3.png);"></div>
     </div>]]
 
 local dialog = window(html, "_ctb", 0, 0, 1834, 337)
 dialog:SetDesignResolution(1834, 337)
 dialog:registerEvent("onmouseup", function(event)
-    if (event:button() == "left") then
-        dialog:CloseWindow()
-    end
+    if event:button() == "left" then dialog:CloseWindow() end
 end)
 
 registerBroadcastEvent("onClickEvent", function(msg)
     msg = commonlib.totable(msg)
     local entity = GetEntity(msg.name)
-    if (entity) then
+    if entity then
         -- do something
     end
 end)
 
-registerBroadcastEvent("onMountEvent", function(msg)
-    -- 更简单的写法
+registerBroadcastEvent("onMountCountingBoard", function(msg)
     msg = commonlib.totable(msg)
     local entity = GetEntity(msg.name)
-
-    -- msg = commonlib.LoadTableFromString(msg)
-    -- local entity = GameLogic.EntityManager.GetEntity(msg.name)
-    local mountedEntity = GameLogic.EntityManager.GetEntity(msg.mountedEntityName)
-    if (entity) then
-        -- do something
-    end
+    local mountedEntity = GameLogic.EntityManager.GetEntity(
+                              msg.mountedEntityName)
+    if entity and mountedEntity then end
 end)
 
 registerBroadcastEvent("onHoverEvent", function(msg)
-    msg = commonlib.LoadTableFromString(msg)
-    local entity = GameLogic.EntityManager.GetEntity(msg.name)
+    msg = commonlib.totable(msg)
+    local entity = GetEntity(msg.name)
     local hoverEntity = GameLogic.EntityManager.GetEntity(msg.hoverEntityName)
-    if (entity and hoverEntity) then
+    if entity and hoverEntity then
         -- do something
     end
 end)
@@ -43,10 +37,10 @@ end)
 -- API
 
 registerBroadcastEvent("onMountEvent", function(msg)
-    msg = commonlib.LoadTableFromString(msg)
-    local entity = GameLogic.EntityManager.GetEntity(msg.name)
-    local mountedEntity = GameLogic.EntityManager.GetEntity(msg.mountedEntityName)
-    if (entity) then
+    msg = commonlib.totable(msg)
+    local entity = GetEntity(msg.name)
+    local mountedEntity = GetEntity(msg.mountedEntityName)
+    if entity then
         mountedEntity = entity:CloneMe()
         mountedEntity:SetName()
         mountedEntity:SetModelFile()
