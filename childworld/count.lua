@@ -56,6 +56,8 @@ registerBroadcastEvent("onMountCountingBoard", function(msg)
         count = count + 1
         tip(count)
         if count == currentNum then tip('物品数量正确') end
+        -- 延迟 为确保开始拖拽事件正确设置（减法函数）
+        wait(0.1)
         mountedEntity:SetOnBeginDragEvent('onBeginDragNum')
     end
 end)

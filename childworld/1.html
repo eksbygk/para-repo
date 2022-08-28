@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .aa {
+            background-image: url();
+            background-color: pink;
+            border-radius: 3px;
+        }
+    </style>
+    <script>
+        function shuffle(nums) {
+            for (let i = nums.length - 1; i >= 0; i--) {
+                const randomIndex = Math.floor(Math.random() * (i + 1))
+                const itemAtNums = nums[randomIndex]
+                nums[randomIndex] = nums[i]
+                nums[i] = itemAtNums
+            }
+            return nums
+        }
+        const nums = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        console.log(shuffle(nums))
+    </script>
+</head>
+
+<body>
+    <div style="width:200px;height:100px;background-color:cyan;line-height:100px;text-align:center;">kasihiyouxi</div>
+</body>
+
+</html>
