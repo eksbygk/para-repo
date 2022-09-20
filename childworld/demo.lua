@@ -1,12 +1,13 @@
-html =
-    [[<div style="width: 1834px;height: 337px;background: url(images/dialog3-0.png);">
+html = [[<div style="width: 1834px;height: 337px;background: url(images/dialog3-0.png);">
         <div style="margin-top: 200px;margin-left: 500px;width:1134px;height:28px;background: url(images/dialog3-3.png);"></div>
     </div>]]
 
 local dialog = window(html, "_ctb", 0, 0, 1834, 337)
 dialog:SetDesignResolution(1834, 337)
 dialog:registerEvent("onmouseup", function(event)
-    if event:button() == "left" then dialog:CloseWindow() end
+    if event:button() == "left" then
+        dialog:CloseWindow()
+    end
 end)
 
 registerBroadcastEvent("onClickEvent", function(msg)
@@ -20,9 +21,9 @@ end)
 registerBroadcastEvent("onMountCountingBoard", function(msg)
     msg = commonlib.totable(msg)
     local entity = GetEntity(msg.name)
-    local mountedEntity = GameLogic.EntityManager.GetEntity(
-                              msg.mountedEntityName)
-    if entity and mountedEntity then end
+    local mountedEntity = GameLogic.EntityManager.GetEntity(msg.mountedEntityName)
+    if entity and mountedEntity then
+    end
 end)
 
 registerBroadcastEvent("onHoverEvent", function(msg)
