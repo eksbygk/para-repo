@@ -9,6 +9,18 @@ dialog:registerEvent("onmouseup", function(event)
     if event:button() == "left" then dialog:CloseWindow() end
 end)
 
+local rightBottom = [[
+    <div onclick="onClickNav" param="square" style="width:110px;height:60px;background: url(images/navigation/8.png)">
+    </div>
+]]
+
+window(rightBottom, "_rb", -120, -70, 300, 100)
+
+function onClickNav(i, mcmlNode)
+    local nav = mcmlNode:GetAttribute("param")
+    print(nav)
+end
+
 registerBroadcastEvent("onClickEvent", function(msg)
     msg = commonlib.totable(msg)
     local entity = GetEntity(msg.name)
